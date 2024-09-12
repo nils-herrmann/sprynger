@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sprynger"
+version = "0.0.1"
+authors = [
+  { name="Nils Herrmann", email="nils_herrmann@outlook.de" },
+]
+description = "An API wrapper for Springer Nature"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/nils-herrmann/sprynger"
+Issues = "https://github.com/nils-herrmann"
+
+[dependencies]
+requests = ">=2.25"
+pandas = ">=1.2"
+
+[tool.setuptools.packages.find]
+include = ["sprynger", "sprynger.*"]
