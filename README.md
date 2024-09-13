@@ -33,3 +33,7 @@ journal_metadata.facets
 > [MetadataFacets(facet='subject', value='Mathematical Methods in Physics', count='1075'),
 MetadataFacets(facet='subject', value='Physics', count='1075'),
 MetadataFacets(facet='subject', value='Fluid- and Aerodynamics', count='1062'), ...]
+
+
+## ⚠️ Disclaimer
+This project is an independent API wrapper for the Springer Nature API. It is not affiliated with, endorsed, or maintained by Springer Nature. For official support, please refer to the Springers's [documentation](http://docs-dev.springernature.com/docs/) and support channels.
