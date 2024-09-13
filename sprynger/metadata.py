@@ -1,3 +1,4 @@
+"""Module with the Metadata class."""
 from typing import Optional, Literal
 
 from sprynger.retrieve import Retrieve
@@ -46,7 +47,7 @@ class Metadata(Retrieve):
         """Contains the individual records that matched the query.
 
         Returns:
-            list: of MetadataRecord objects which contain the following items of a 
+            list: List of MetadataRecord objects which contain the following items of a 
             document: `contentType`, 
             `identifier`, `language`, `url`, `url_format`, `url_platform`, `title`, `creators`, 
             `publicationName`, `openaccess`, `doi`, `publisher`, `publicationDate`,
