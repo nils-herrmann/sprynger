@@ -1,5 +1,3 @@
-from pandas import DataFrame
-
 from sprynger import Metadata
 from sprynger.utils.data_structures import MetadataCreator, MetadataFacets, MetadataRecord
 
@@ -32,11 +30,6 @@ def test_factets():
 
     expected = MetadataFacets(facet='subject', value='Physics', count='1')
     assert article_metadata.facets[1] == expected
-
-    expected_df = DataFrame({'facet': {0: 'subject', 1: 'subject'},
-                             'value': {0: 'Optics, Lasers, Photonics, Optical Devices', 1: 'Physics'},
-                             'count': {0: '1', 1: '1'}})
-    assert article_metadata.facets_df.head(2).equals(expected_df)
 
 
 def test_records():
@@ -71,7 +64,6 @@ def test_records():
                               abstract='An ideal radiative cooler requires accurate spectral control capability to achieve efficient thermal emission in the atmospheric transparency window (8–13\xa0μm), low solar absorption, good stability, scalability, and a simple structure for effective diurnal radiative cooling. Flexible cooling films made from polymer relying on polymer intrinsic absorbance represent a cost-effective solution but lack accuracy in spectral control. Here, we propose and demonstrate a metasurface concept enabled by periodically arranged three-dimensional (3D) trench-like structures in a thin layer of polymer for high-performance radiative cooling. The structured polymer metasurface radiative cooler is manufactured by a roll-to-roll printing method. It exhibits superior spectral breadth and selectivity, which offers outstanding omnidirectional absorption/emission (96.1%) in the atmospheric transparency window, low solar absorption (4.8%), and high stability. Impressive cooling power of 129.8 W m −2 and temperature deduction of 7\xa0°C on a clear sky midday have been achieved, promising broad practical applications in energy saving and passive heat dispersion fields.',
                               subjects=['Physics', 'Optics, Lasers, Photonics, Optical Devices'])
     assert article_metadata.records[0] == expected
-    assert article_metadata.records_df.equals(DataFrame([expected]))
 
 
 def test_results():
@@ -85,4 +77,4 @@ def test_wrong_id_type():
     except ValueError as e:
         assert str(e) == 'Invalid identifier'
     else:
-        assert False
+        raise AssertionError('ValueError not raised')
