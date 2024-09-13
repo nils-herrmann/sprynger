@@ -23,7 +23,6 @@ Issues = "https://github.com/nils-herrmann"
 
 [dependencies]
 requests = ">=2.25"
-pandas = ">=1.2"
 
 [tool.setuptools.packages.find]
 include = ["sprynger", "sprynger.*"]

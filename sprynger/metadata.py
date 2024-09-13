@@ -1,5 +1,4 @@
 from typing import Optional, Literal
-from pandas import DataFrame
 
 from sprynger.retrieve import Retrieve
 from sprynger.utils.fetch import detect_id_type
@@ -14,7 +13,11 @@ class Metadata(Retrieve):
         """Faceted information about the results.
 
         Returns:
-            list[MetadataFacets]: A list of MetadataFacets objects containing the `facet`, `value`, and `count`.
+            list[MetadataFacets]: A list of MetadataFacets objects containing the 
+            `facet`, `value`, and `count`.
+
+        Note:
+            The facets are easily converted to a pd.DataFrame using `pd.DataFrame(metadata.facets)`.
         """
         facets_list = []
         for facet in self.json.get('facets'):
@@ -27,30 +30,13 @@ class Metadata(Retrieve):
         return facets_list
 
     @property
-    def facets_df(self) -> DataFrame:
-        """DataFrame with the facets of the results.
-
-        Returns:
-            pd.DataFrame: A DataFrame containing the `facets`, `values`, and `counts`.
-
-        Example:
-            >>> df = self.facets_df
-            >>> print(df.head())
-                 facet                                              value  count
-            0    subject  Probability and Statistics in Computer Science   1816
-            1    subject  Probability Theory and Stochastic Processes     1816
-            2    subject  Statistics                                      1816
-        """
-
-        return DataFrame(self.facets)
-
-    @property
     def results(self) -> dict:
         """Dictionary with an overview of the results of the query.
 
         Returns:
-            dict: A dictionary containing the following keys the `total` matches found, `start` index of the first result, 
-            `pageLength` number of results per page, `recordsDisplayed` number of records displayed.
+            dict: A dictionary containing the following keys the `total` matches found, `start` 
+            index of the first result, `pageLength` number of results per page, `recordsDisplayed` 
+            number of records displayed.
         """
         res = self.json.get('result', [{}])
         return res[0]
@@ -58,12 +44,18 @@ class Metadata(Retrieve):
     @property
     def records(self) -> list[MetadataRecord]:
         """Contains the individual records that matched the query.
-        
+
         Returns:
-            list: of MetadataRecord objects which contain the following items of a document: `contentType`, `identifier`, `language`, `url`, 
-            `url_format`, `url_platform`, `title`, `creators`, `publicationName`, `openaccess`, `doi`, `publisher`, 
-            `publicationDate`, `publicationType`, `issn`, `volume`, `number`, `genre`, `startingPage`, `endingPage`,
-            `journalId`, `copyright`, `abstract` and `subjects`.
+            list: of MetadataRecord objects which contain the following items of a 
+            document: `contentType`, 
+            `identifier`, `language`, `url`, `url_format`, `url_platform`, `title`, `creators`, 
+            `publicationName`, `openaccess`, `doi`, `publisher`, `publicationDate`,
+            `publicationType`, `issn`, `volume`, `number`, `genre`, `startingPage`, 
+            `endingPage`,`journalId`, `copyright`, `abstract` and `subjects`.
+
+        Note:
+            The records are easily converted to a pd.DataFrame using 
+            `pd.DataFrame(metadata.records)`.
         """
         records_list = []
         for record in self.json.get('records', []):
@@ -105,39 +97,26 @@ class Metadata(Retrieve):
                 )
             )
         return records_list
-    
-    @property
-    def records_df(self) -> DataFrame:
-        """Create a DataFrame where each row represents the metadata of a document.
-
-        Returns:
-            pd.DataFrame: A DataFrame containing the following columns: `contentType`, `identifier`, `language`, `url`, 
-            `url_format`, `url_platform`, `title`, `creators`, `publicationName`, `openaccess`, `doi`, `publisher`, 
-            `publicationDate`, `publicationType`, `issn`, `volume`, `number`, `genre`, `startingPage`, `endingPage`, 
-            `journalId`, `copyright`, `abstract` and `subjects`.
-        """
-        return DataFrame(self.records)
-
 
     def __init__(self,
-                 id: str,
+                 identifier: str,
                  id_type: Optional[Literal['doi', 'issn', 'isbn']] = None,
                  start: int = 1,
                  max_results: int = 10):
-        """Initialize the Metadata object to retrieve metadata from the Springer Metadata API. Depending on the type of 
-        identifier, the API will return either:
+        """Initialize the Metadata object to retrieve metadata from the Springer Metadata API. 
+        Depending on the type of identifier, the API will return either:
         - doi: One single article 
         - issn: All articles from a journal
         - isbn: All chapters from a book
 
         Args:
-            id (str): The identifier of the article (doi) or the journal (issn) or book (isbn).
+            identifier (str): The identifier of the article (doi) or the journal (issn) or book (isbn).
             id_type (Optional[Literal['doi', 'issn', 'isbn']]): The type of the identifier. If not provided, it will be detected automatically.
             start (int): The starting index for the results. Defaults to 1.
             max_results (int): The maximum number of results to retrieve. Defaults to 10.            
         """
 
-        self._id = id
+        self._id = identifier
         self._id_type = id_type
         self._start = start
         self._max_results = max_results
@@ -145,8 +124,7 @@ class Metadata(Retrieve):
         if self._id_type is None:
             self._id_type = detect_id_type(self._id)
 
-        
-        super().__init__(id=self._id,
+        super().__init__(identifier=self._id,
                          id_type=self._id_type,
                          api='metadata',
                          start=self._start,
