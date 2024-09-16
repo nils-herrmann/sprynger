@@ -1,12 +1,13 @@
 """Tests for the OpenAccessBook class."""
-
+from sprynger import init
 from sprynger import OpenAccessBook
 from sprynger.utils.data_structures import BookMeta, ChapterMeta, OpenAcessParagraph
+
+init()
 
 book = OpenAccessBook("978-3-031-63500-7", start=1, max_results=2)
 chapter = OpenAccessBook("10.1007/978-3-031-61874-1_5")
 chapter_with_text = OpenAccessBook("10.1007/978-3-031-24498-8_7")
-
 
 def test_book_meta():
     """Test the book meta data."""

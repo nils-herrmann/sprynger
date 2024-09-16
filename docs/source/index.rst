@@ -11,6 +11,15 @@ Simple library to retrieve data from the Springer Nature API.
 
 .. currentmodule:: sprynger
 
+Initialization
+==============
+
+.. toctree::
+   :maxdepth: 1
+   
+   initialization.rst
+
+
 APIs
 ========
 
@@ -19,5 +28,6 @@ APIs
 
     classes/Metadata.rst
     classes/OpenAccess.rst
+
 
 

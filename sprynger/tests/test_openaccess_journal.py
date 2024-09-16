@@ -1,11 +1,12 @@
 """Tests for the OpenAccessJournal class."""
-
+from sprynger import init
 from sprynger import OpenAccessJournal
 from sprynger.utils.data_structures import ArticleMeta, JournalMeta, OpenAcessParagraph
 
+init()
+
 journal = OpenAccessJournal("2198-6053", start=4, max_results=3)
 article = OpenAccessJournal("10.1007/s40747-024-01577-y")
-
 
 def test_article_meta():
     """Test the article meta-data."""
