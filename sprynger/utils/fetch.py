@@ -1,12 +1,12 @@
-from requests import Session
+from requests import Response, Session
+
 from typing import Literal
 
 def create_session():
     session = Session()
     return session
 
-def fetch_data(url: str,
-               params: dict):
+def fetch_data(url: str, params: dict) -> Response:
     """Fetch data from the Springer API."""
     session = create_session()
     response = session.get(url, params=params)

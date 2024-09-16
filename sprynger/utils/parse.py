@@ -1,4 +1,8 @@
+"""Utility functions for parsing data."""
 from functools import reduce
+from typing import Optional
+
+from lxml.etree import _Element
 
 def chained_get(container, path, default=None):
     """Helper function to perform a series of .get() methods on a dictionary
@@ -21,6 +25,24 @@ def chained_get(container, path, default=None):
         return reduce(lambda c, k: c.get(k, default), path, container)
     except (AttributeError, TypeError):
         return default
+
+
+def get_attr(node: _Element,
+             tag: str,
+             attr: str,
+             value: str) -> Optional[str]:
+    """Get the attribute of a tag in an XML node."""
+    if node.find(f'.//{tag}[@{attr}="{value}"]') is not None:
+        return node.find(f'.//{tag}[@{attr}="{value}"]').text
+    return None
+
+
+def get_text(node: _Element,
+             path: str) -> Optional[str]:
+    """Get the text of an XML node."""
+    if node.find(path) is not None:
+        return node.find(path).text
+    return None
 
 
 def listify(element):

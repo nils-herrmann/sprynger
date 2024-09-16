@@ -10,3 +10,9 @@ DEFAULT_PATHS = {
     'Meta': BASE_PATH/'meta',
     'OpenAccess': BASE_PATH/'open_access',
 }
+
+FORMAT = {
+    'Metadata': 'json',
+    'Meta': 'json',
+    'OpenAccess': 'jats'
+}

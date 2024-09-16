@@ -20,6 +20,7 @@ extensions = [
 templates_path = ['_templates']
 exclude_patterns = []
 
+autoclass_content = "both"  # Document both class-level and __init__ method docstrings
 
 
 # -- Options for HTML output -------------------------------------------------

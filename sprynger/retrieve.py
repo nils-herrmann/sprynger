@@ -1,27 +1,41 @@
 """Module with the Retrieval Class"""
+from json.decoder import JSONDecodeError
 from typing import Optional, Literal
 
-from sprynger.utils.constants import BASE_URL
+from lxml import etree
+
+from sprynger.utils.constants import BASE_URL, FORMAT
 from sprynger.utils.fetch import fetch_data
 from sprynger.utils.startup import get_config
+
+
 
 class Retrieve():
     """Base class to retrieve data from the Springer API."""
     @property
-    def json(self):
+    def json(self) -> dict:
         """JSON response from the API."""
-        return self._res.json()
+        try:
+            return self._res.json()
+        except JSONDecodeError:
+            return {}
+
+    @property
+    def xml(self) -> etree._Element:
+        """XML response from the API."""
+        return etree.fromstring(text = self._res.content)
 
     def __init__(self,
                  identifier: str,
                  id_type: Optional[Literal['doi', 'issn', 'isbn']],
-                 api: Literal['metadata', 'meta/v2', 'openaccess'],
+                 api: Literal['Metadata', 'Meta', 'OpenAccess'],
                  start: int = 1,
                  max_results: int = 10):
 
         config = get_config()
 
-        self._url = f'{BASE_URL}/{api}/json'
+        self._url = f'{BASE_URL}/{api.lower()}/{FORMAT[api]}'
+
         self._params = {'q': f'{id_type}:{identifier}',
                        's': start,
                        'p': max_results,

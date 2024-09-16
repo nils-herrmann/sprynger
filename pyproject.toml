@@ -22,6 +22,7 @@ Homepage = "https://github.com/nils-herrmann/sprynger"
 Issues = "https://github.com/nils-herrmann"
 
 [dependencies]
+lxml = ">=4.6.3"
 requests = ">=2.25"
 
 [tool.setuptools.packages.find]
