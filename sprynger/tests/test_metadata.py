@@ -1,10 +1,13 @@
+"""Tests for the metadata module."""
+from sprynger import init
 from sprynger import Metadata
 from sprynger.utils.data_structures import MetadataCreator, MetadataFacets, MetadataRecord
+
+init()
 
 journal_metadata = Metadata('3004-9261', start=1, max_results=2)
 article_metadata = Metadata('10.1186/s43593-023-00053-3')
 book_metadata = Metadata('978-1-0716-1418-1', start=1, max_results=3)
-
 
 def test_book():
     for book in book_metadata.records:
