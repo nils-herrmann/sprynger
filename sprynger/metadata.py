@@ -16,12 +16,10 @@ class Metadata(Retrieve):
         Returns:
             list[MetadataFacets]: A list of MetadataFacets objects containing the 
             `facet`, `value`, and `count`.
-
-        Note:
-            The facets are easily converted to a pd.DataFrame using `pd.DataFrame(metadata.facets)`.
         """
         facets_list = []
-        for facet in self.json.get('facets'):
+        factets = self.json.get('facets', [])
+        for facet in factets:
             facet_name = facet.get('name')
             for item in facet.get('values', []):
                 new_facet = MetadataFacets(facet=facet_name,
@@ -53,10 +51,6 @@ class Metadata(Retrieve):
             `publicationName`, `openaccess`, `doi`, `publisher`, `publicationDate`,
             `publicationType`, `issn`, `volume`, `number`, `genre`, `startingPage`, 
             `endingPage`,`journalId`, `copyright`, `abstract` and `subjects`.
-
-        Note:
-            The records are easily converted to a pd.DataFrame using 
-            `pd.DataFrame(metadata.records)`.
         """
         records_list = []
         for record in self.json.get('records', []):
@@ -106,6 +100,7 @@ class Metadata(Retrieve):
                  max_results: int = 10):
         """Initialize the Metadata object to retrieve metadata from the Springer Metadata API. 
         Depending on the type of identifier, the API will return either:
+
         - doi: One single article 
         - issn: All articles from a journal
         - isbn: All chapters from a book
@@ -114,7 +109,10 @@ class Metadata(Retrieve):
             identifier (str): The identifier of the article (doi) or the journal (issn) or book (isbn).
             id_type (Optional[Literal['doi', 'issn', 'isbn']]): The type of the identifier. If not provided, it will be detected automatically.
             start (int): The starting index for the results. Defaults to 1.
-            max_results (int): The maximum number of results to retrieve. Defaults to 10.            
+            max_results (int): The maximum number of results to retrieve. Defaults to 10.  
+
+        Note:
+            - All properties can be converted to a pandas DataFrame with `pd.DataFrame(object.property)`.          
         """
 
         self._id = identifier
@@ -127,6 +125,6 @@ class Metadata(Retrieve):
 
         super().__init__(identifier=self._id,
                          id_type=self._id_type,
-                         api='metadata',
+                         api='Metadata',
                          start=self._start,
                          max_results=self._max_results)
