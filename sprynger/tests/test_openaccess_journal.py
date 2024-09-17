@@ -5,8 +5,8 @@ from sprynger.utils.data_structures import ArticleMeta, JournalMeta, OpenAcessPa
 
 init()
 
-journal = OpenAccessJournal("2198-6053", start=4, max_results=3)
-article = OpenAccessJournal("10.1007/s40747-024-01577-y")
+journal = OpenAccessJournal("2198-6053", start=4, max_results=3, refresh=30)
+article = OpenAccessJournal("10.1007/s40747-024-01577-y", refresh=30)
 
 def test_article_meta():
     """Test the article meta-data."""

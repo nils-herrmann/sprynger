@@ -5,9 +5,9 @@ from sprynger.utils.data_structures import MetadataCreator, MetadataFacets, Meta
 
 init()
 
-journal_metadata = Metadata('3004-9261', start=1, max_results=2)
-article_metadata = Metadata('10.1186/s43593-023-00053-3')
-book_metadata = Metadata('978-1-0716-1418-1', start=1, max_results=3)
+journal_metadata = Metadata('3004-9261', start=1, max_results=2, refresh=30)
+article_metadata = Metadata('10.1186/s43593-023-00053-3', refresh=30)
+book_metadata = Metadata('978-1-0716-1418-1', start=1, max_results=3, refresh=30)
 
 def test_book():
     for book in book_metadata.records:

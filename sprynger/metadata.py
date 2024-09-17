@@ -1,5 +1,5 @@
 """Module with the Metadata class."""
-from typing import Optional, Literal
+from typing import Literal, Optional, Union
 
 from sprynger.retrieve import Retrieve
 from sprynger.utils.fetch import detect_id_type
@@ -97,7 +97,9 @@ class Metadata(Retrieve):
                  identifier: str,
                  id_type: Optional[Literal['doi', 'issn', 'isbn']] = None,
                  start: int = 1,
-                 max_results: int = 10):
+                 max_results: int = 10,
+                 cache: bool = True,
+                 refresh: Union[bool, int] = False):
         """Initialize the Metadata object to retrieve metadata from the Springer Metadata API. 
         Depending on the type of identifier, the API will return either:
 
@@ -127,4 +129,6 @@ class Metadata(Retrieve):
                          id_type=self._id_type,
                          api='Metadata',
                          start=self._start,
-                         max_results=self._max_results)
+                         max_results=self._max_results,
+                         cache=cache,
+                         refresh=refresh)
