@@ -4,7 +4,7 @@ on the type of data to retrieve, the user can use:
 - `OpenAccessJournal`: class to retrieve data a journal. Single articles can also be queried.
 - `OpenAccessBook`: class to retrieve data book. Single chapters can also be queried.
 """
-from typing import Optional, Literal
+from typing import Literal, Optional, Union
 
 from sprynger.openaccess_base import OpenAccessBase
 from sprynger.utils.data_structures import (ArticleMeta, BookMeta,
@@ -90,7 +90,9 @@ class OpenAccessJournal(OpenAccessBase):
                 identifier: str,
                 id_type: Optional[Literal['doi', 'issn']] = None,
                 start: int = 1,
-                max_results: int = 10):
+                max_results: int = 10,
+                cache: bool = True,
+                refresh: Union[bool, int] = False):
         """Retrieve journal/articles data from the Springer OpenAccess API. 
         Depending on the type of identifier, the API will return either:
         - doi: One single article 
@@ -107,7 +109,8 @@ class OpenAccessJournal(OpenAccessBase):
             - All properties can be converted to a pandas DataFrame with `pd.DataFrame(object.property)`.
         """
         super().__init__(identifier=identifier, id_type=id_type,
-                         start=start, max_results=max_results)
+                         start=start, max_results=max_results,
+                         cache=cache, refresh=refresh)
         self._document_type = 'article'
 
 
@@ -187,7 +190,9 @@ class OpenAccessBook(OpenAccessBase):
                 identifier: str,
                 id_type: Optional[Literal['doi','isbn']] = None,
                 start: int = 1,
-                max_results: int = 10):
+                max_results: int = 10,
+                cache: bool = True,
+                refresh: Union[bool, int] = False):
         """Retrieve book/chapters from the Springer OpenAccess API. 
         Depending on the type of identifier, the API will return either:
         - doi: One single chapter 
@@ -205,4 +210,5 @@ class OpenAccessBook(OpenAccessBase):
             - All properties can be converted to a pandas DataFrame with `pd.DataFrame(object.property)`.
         """
         super().__init__(identifier=identifier, id_type=id_type,
-                         start=start, max_results=max_results)
+                         start=start, max_results=max_results,
+                         cache=cache, refresh=refresh)

@@ -1,5 +1,5 @@
 """Module with the OpenAccess base class."""
-from typing import Optional, Literal
+from typing import Literal, Optional, Union
 
 from sprynger.retrieve import Retrieve
 from sprynger.utils.fetch import detect_id_type
@@ -48,7 +48,9 @@ class OpenAccessBase(Retrieve):
                 identifier: str,
                 id_type: Optional[Literal['doi', 'issn', 'isbn']] = None,
                 start: int = 1,
-                max_results: int = 10):
+                max_results: int = 10,
+                cache: bool = True,
+                refresh: Union[bool, int] = False):
         """Base class to retrieve OpenAccess from the Springer OpenAccess API."""
         self._id = identifier
         self._id_type = id_type
@@ -63,4 +65,6 @@ class OpenAccessBase(Retrieve):
                         id_type=self._id_type,
                         api='OpenAccess',
                         start=self._start,
-                        max_results=self._max_results)
+                        max_results=self._max_results,
+                        cache=cache,
+                        refresh=refresh)

@@ -11,6 +11,8 @@ authors = [
 description = "An API wrapper for Springer Nature"
 readme = "README.md"
 requires-python = ">=3.8"
+keywords = ["API", "Springer", "wrapper", "requests", "lxml"]
+license = { text = "MIT" }
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
