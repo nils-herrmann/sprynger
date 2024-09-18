@@ -18,12 +18,12 @@ class OpenAccessBase(Retrieve):
         # Extract the paragraphs from the XML
         documents = []
         for document in self.xml.findall(f'.//{document_type}'):
-            
+
             paragraphs = []
             sections = document.findall('.//body//sec')
             if len(sections) == 0:
                 sections = []
-                
+  
             for section in sections:
                 section_id = section.get('id')
                 section_title = section.find('title').text if section.find('title') is not None else None

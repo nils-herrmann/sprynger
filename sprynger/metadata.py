@@ -108,13 +108,19 @@ class Metadata(Retrieve):
         - isbn: All chapters from a book
 
         Args:
-            identifier (str): The identifier of the article (doi) or the journal (issn) or book (isbn).
-            id_type (Optional[Literal['doi', 'issn', 'isbn']]): The type of the identifier. If not provided, it will be detected automatically.
+            identifier (str): The identifier of the article (doi) 
+                or the journal (issn) or book (isbn).
+            id_type (Optional[Literal['doi', 'issn', 'isbn']]): The type of the identifier.
+                If not provided, it will be detected automatically.
             start (int): The starting index for the results. Defaults to 1.
-            max_results (int): The maximum number of results to retrieve. Defaults to 10.  
+            max_results (int): The maximum number of results to retrieve. Defaults to 10.
+            cache (bool): Whether to cache the results. Defaults to True.
+            refresh (bool|int): Weather to refresh the cache. If an integer is provided, 
+                it will be used as the cache expiration time in days. Defaults to False.
 
         Note:
-            - All properties can be converted to a pandas DataFrame with `pd.DataFrame(object.property)`.          
+            - All properties can be converted to a pandas DataFrame 
+                with `pd.DataFrame(object.property)`.          
         """
 
         self._id = identifier

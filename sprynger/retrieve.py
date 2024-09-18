@@ -52,8 +52,8 @@ class Retrieve():
 
         # Generate a cache key based on the parameters
         cache_dir = config.get('Directories', api)
-        self._cache_key = f'{identifier.replace('/', '-')}_{start}_{max_results}'
-        self._cache_file = os.path.join(cache_dir, f"{self._cache_key}.{FORMAT[api]}")
+        self._cache_key = f'{identifier.replace("/", "-")}_{start}_{max_results}'
+        self._cache_file = os.path.join(cache_dir, f'{self._cache_key}.{FORMAT[api]}')
 
         if self._should_fetch(refresh):
             self._fetch(cache)
@@ -66,7 +66,7 @@ class Retrieve():
             return refresh # If is cached user decides to fetch
         elif isinstance(refresh, int) and self._is_cached():
             cache_age = datetime.now() - datetime.fromtimestamp(os.path.getmtime(self._cache_file))
-            return cache_age > timedelta(days=refresh)  # Fetch if cache is older than specified days
+            return cache_age > timedelta(days=refresh)  #Fetch if cache is older than specified days
         return True  # If no cache exists, return True to fetch
 
     def _is_cached(self) -> bool:

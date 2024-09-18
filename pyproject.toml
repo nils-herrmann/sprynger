@@ -11,6 +11,7 @@ authors = [
 description = "An API wrapper for Springer Nature"
 readme = "README.md"
 requires-python = ">=3.8"
+dependencies = ["lxml", "requests"]
 keywords = ["API", "Springer", "wrapper", "requests", "lxml"]
 license = { text = "MIT" }
 classifiers = [
@@ -22,10 +23,8 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/nils-herrmann/sprynger"
 Issues = "https://github.com/nils-herrmann"
+Documentation = "https://sprynger.readthedocs.io/en/latest/"
 
-[dependencies]
-lxml = ">=4.6.3"
-requests = ">=2.25"
 
 [tool.setuptools.packages.find]
 include = ["sprynger", "sprynger.*"]
