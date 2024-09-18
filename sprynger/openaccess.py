@@ -1,8 +1,8 @@
-"""Module with two classes to retrieve data from the Springer Nature OpenAccess API. Depending
+"""Module with two classes to retrieve data from the Springer Nature OpenAccess API. Depending 
 on the type of data to retrieve, the user can use:
 
-- `OpenAccessJournal`: class to retrieve data a journal. Single articles can also be queried.
-- `OpenAccessBook`: class to retrieve data book. Single chapters can also be queried.
+- `OpenAccessJournal`: class to retrieve data of a journal. Single articles can also be queried.
+- `OpenAccessBook`: class to retrieve data of a book. Single chapters can also be queried.
 """
 from typing import Literal, Optional, Union
 
@@ -100,13 +100,18 @@ class OpenAccessJournal(OpenAccessBase):
 
         Args:
             identifier (str): The identifier of the article (doi) or the journal (issn).
-            id_type (Optional[Literal['doi', 'issn']]): The type of the identifier. If not provided, it will be detected automatically.
+            id_type (Optional[Literal['doi', 'issn']]): The type of the identifier.
+                If not provided, it will be detected automatically.
             start (int): The starting index for the results. Defaults to 1.
             max_results (int): The maximum number of results to retrieve. Defaults to 10.
+            cache (bool): Whether to cache the results. Defaults to True.
+            refresh (bool|int): Weather to refresh the cache. If an integer is provided, 
+                it will be used as the cache expiration time in days. Defaults to False.
         
         Note:
             - For books/chapters use the `OpenAccessBooks` class.
-            - All properties can be converted to a pandas DataFrame with `pd.DataFrame(object.property)`.
+            - All properties can be converted to a pandas 
+                DataFrame with `pd.DataFrame(object.property)`.
         """
         super().__init__(identifier=identifier, id_type=id_type,
                          start=start, max_results=max_results,
@@ -115,7 +120,7 @@ class OpenAccessJournal(OpenAccessBase):
 
 
 class OpenAccessBook(OpenAccessBase):
-    """Class to retrieve data from a book from the Springer OpenAccess API."""
+    """Class to retrieve data from a book/chapter from the Springer OpenAccess API."""
     @property
     def book_meta(self) -> BookMeta:
         """Metadata of the book.
@@ -177,8 +182,9 @@ class OpenAccessBook(OpenAccessBase):
 
     @property
     def paragraphs(self) -> list[list[OpenAcessParagraph]]:
-        """Paragraphs of the chapter(s). This property returns a list of the paragraphs *for each chapter*.
-        The paragraphs of a chapter are in form of a list of OpenAcessParagraph named tuples.
+        """Paragraphs of the chapter(s). This property returns a list of the 
+        paragraphs *for each chapter*. The paragraphs of a chapter are in form of a 
+        list of OpenAcessParagraph named tuples.
 
         Returns:
             list[list[OpenAcessParagraph]]: A list of OpenAcessParagraph objects containing the 
@@ -204,10 +210,14 @@ class OpenAccessBook(OpenAccessBase):
                 not provided, it will be detected automatically.
             start (int): The starting index for the results. Defaults to 1.
             max_results (int): The maximum number of results to retrieve. Defaults to 10.
+            cache (bool): Whether to cache the results. Defaults to True.
+            refresh (bool|int): Weather to refresh the cache. If an integer is provided, 
+                it will be used as the cache expiration time in days. Defaults to False.
         
         Note:
             - For journals/articles use the `OpenAccessJournal` class.
-            - All properties can be converted to a pandas DataFrame with `pd.DataFrame(object.property)`.
+            - All properties can be converted to a pandas DataFrame
+                with `pd.DataFrame(object.property)`.
         """
         super().__init__(identifier=identifier, id_type=id_type,
                          start=start, max_results=max_results,

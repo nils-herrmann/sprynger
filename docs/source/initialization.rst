@@ -6,7 +6,7 @@ You initalize `sprynger` as follows:
 .. code-block:: python
 
     import sprynger
-	sprynger.init()
+    sprynger.init()
 
 This reads the configuration from the default locations. If you store the configuration file elsewhere, you can provide the path using keyword "config_dir" (str). You may also pass your own keys using the keyword "keys" (list).
 
