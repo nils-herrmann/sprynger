@@ -10,7 +10,7 @@ authors = [
 ]
 description = "An API wrapper for Springer Nature"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = ["lxml", "requests"]
 keywords = ["API", "Springer", "wrapper", "requests", "lxml"]
 license = { text = "MIT" }
