@@ -20,7 +20,7 @@ class OpenAccessJournal(OpenAccessBase):
         
         Returns:
             list[ArticleMeta]: A list of ArticleMeta objects containing the 
-            `publisher_id`, `manuscript`, and `doi`.
+            `article_type`, `language`, `publisher_id`, `manuscript`, and `doi`.
         """
         articles_metadata = []
         for document in self.xml.findall(self._part_path):
