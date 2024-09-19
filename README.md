@@ -65,5 +65,8 @@ OpenAcessParagraph(paragraph_id='Par3', section_id='Sec1', section_title='Introd
 ## 📖 Documentation
 For a comprehensive guide, see the documentation in [read the docs](https://sprynger.readthedocs.io/en/latest/index.html).
 
+## ⭐️ Give the package a star
+If the package helped you, give it a star!
+
 ## ⚠️ Disclaimer
 This project is an independent API wrapper for the Springer Nature API. It is not affiliated with, endorsed, or maintained by Springer Nature. For official support, please refer to the Springers's [documentation](http://docs-dev.springernature.com/docs/) and support channels.
