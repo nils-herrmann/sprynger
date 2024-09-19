@@ -23,16 +23,20 @@ class OpenAccessJournal(OpenAccessBase):
             `publisher_id`, `manuscript`, and `doi`.
         """
         articles_metadata = []
-        for document in self.xml.findall('.//article'):
+        for document in self.xml.findall(self._part_path):
+            article_type = document.get('article-type')
+            language = document.get('{http://www.w3.org/XML/1998/namespace}lang')
 
             publisher_id, manuscript, doi = None, None, None
-            metadata  =  document.find('.//article-meta')
+            metadata  =  document.find('.//front/article-meta')
             if metadata is not None:
                 publisher_id = get_attr(metadata, 'article-id', 'pub-id-type', 'publisher-id')
                 manuscript = get_attr(metadata, 'article-id', 'pub-id-type', 'manuscript')
                 doi = get_attr(metadata, 'article-id', 'pub-id-type', 'doi')
 
-            data = ArticleMeta(publisher_id=publisher_id,
+            data = ArticleMeta(article_type=article_type,
+                               language=language,
+                               publisher_id=publisher_id,
                                manuscript=manuscript,
                                doi=doi)
             articles_metadata.append(data)
@@ -84,7 +88,7 @@ class OpenAccessJournal(OpenAccessBase):
             list[list[OpenAcessParagraph]]: A list of OpenAcessParagraph objects containing the 
             `paragraph_id`, `section_id`, `section_title`, and `text`.
         """
-        return super().get_paragraphs(document_type='article')
+        return super().get_paragraphs(part_path=self._part_path)
 
     def __init__(self,
                 identifier: str,
@@ -116,7 +120,7 @@ class OpenAccessJournal(OpenAccessBase):
         super().__init__(identifier=identifier, id_type=id_type,
                          start=start, max_results=max_results,
                          cache=cache, refresh=refresh)
-        self._document_type = 'article'
+        self._part_path = './/article'
 
 
 class OpenAccessBook(OpenAccessBase):
@@ -166,7 +170,7 @@ class OpenAccessBook(OpenAccessBase):
             `doi`, `publisher_id`, and `book_title_id`.
         """
         chapters_metadata = []
-        for document in self.xml.findall('.//book-part'):
+        for document in self.xml.findall(self._part_path):
 
             doi, chapter = None, None
             metadata  =  document.find('.//book-part-meta')
@@ -190,7 +194,7 @@ class OpenAccessBook(OpenAccessBase):
             list[list[OpenAcessParagraph]]: A list of OpenAcessParagraph objects containing the 
             `paragraph_id`, `section_id`, `section_title`, and `text`.
         """
-        return super().get_paragraphs(document_type='book-part')
+        return super().get_paragraphs(part_path=self._part_path)
 
     def __init__(self,
                 identifier: str,
@@ -222,3 +226,4 @@ class OpenAccessBook(OpenAccessBase):
         super().__init__(identifier=identifier, id_type=id_type,
                          start=start, max_results=max_results,
                          cache=cache, refresh=refresh)
+        self._part_path = './/book-part[@book-part-type="chapter"]'

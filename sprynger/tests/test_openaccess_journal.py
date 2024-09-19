@@ -12,6 +12,8 @@ def test_article_meta():
     """Test the article meta-data."""
     assert len(journal.article_meta) == 3
     expected = ArticleMeta(
+        article_type = "research-article",
+        language="en",
         publisher_id="s40747-024-01577-y",
         manuscript="1577",
         doi="10.1007/s40747-024-01577-y",

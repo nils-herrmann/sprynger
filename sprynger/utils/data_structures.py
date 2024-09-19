@@ -1,47 +1,51 @@
+"""Module with all the data structures used in the package."""
 from collections import namedtuple
 
-fields_metadata_record = ['contentType', 'identifier', 'language', 'url', 'url_format', 'url_platform' ,'title', 'creators', 'publicationName', 'openaccess', 
-                          'doi', 'publisher', 'publicationDate', 'publicationType', 'issn', 'volume', 'number', 'genre', 
-                          'startingPage', 'endingPage', 'journalId', 'copyright', 'abstract', 'subjects']
-MetadataRecord = namedtuple('MetadataRecord',
-                            fields_metadata_record,
-                            defaults=[None] * len(fields_metadata_record))
+def create_namedtuple(name: str, fields: list, defaults=None):
+    """Create a namedtuple with default values."""
+    default_list = [defaults] * len(fields)
+    return namedtuple(name, fields, defaults=default_list)
+
+#############################
+#          Metadata         #
+#############################
+fields_metadata_record = ['contentType', 'identifier', 'language', 'url',
+                          'url_format', 'url_platform' ,'title', 'creators',
+                          'publicationName', 'openaccess', 
+                          'doi', 'publisher', 'publicationDate',
+                          'publicationType', 'issn', 'volume', 'number', 'genre', 
+                          'startingPage', 'endingPage', 'journalId',
+                          'copyright', 'abstract', 'subjects']
+MetadataRecord = create_namedtuple('MetadataRecord', fields_metadata_record)
 
 fields_metadata_creator = ['creator', 'ORCID']
-MetadataCreator = namedtuple('MetadataCreator',
-                            fields_metadata_creator,
-                            defaults=[None] * len(fields_metadata_creator))
+MetadataCreator = create_namedtuple('MetadataCreator', fields_metadata_creator)
 
 fields_metadata_facets = ['facet', 'value', 'count']
-MetadataFacets = namedtuple('MetadataFacets',
-                            fields_metadata_facets,
-                            defaults=[None] * len(fields_metadata_facets))
+MetadataFacets = create_namedtuple('MetadataFacets', fields_metadata_facets)
 
+#############################
+#         Open Access       #
+#############################
+
+# Open Access Paragraph
 fields_openaccess_paragraphs = ['paragraph_id', 'section_id', 'section_title', 'text']
-OpenAcessParagraph = namedtuple('OpenAcessParagraph',
-                                fields_openaccess_paragraphs,
-                                defaults=[None] * len(fields_openaccess_paragraphs))
+OpenAcessParagraph = create_namedtuple('OpenAcessParagraph', fields_openaccess_paragraphs)
 
-fields_openaccess_article_meta = ['publisher_id', 'manuscript', 'doi']
-ArticleMeta = namedtuple('ArticleMeta',
-                         fields_openaccess_article_meta,
-                         defaults=[None] * len(fields_openaccess_article_meta))
-
-fields_openaccess_book_meta = ['doi', 'chapter']
-ChapterMeta = namedtuple('ChapterMeta',
-                      fields_openaccess_book_meta,
-                      defaults=[None] * len(fields_openaccess_book_meta))
+# Open Access Journal/Article
+fields_openaccess_article_meta = ['article_type', 'language', 'publisher_id', 'manuscript', 'doi']
+ArticleMeta = create_namedtuple('ArticleMeta', fields_openaccess_article_meta)
 
 fields_openaccess_journal_meta = ['publisher_id', 'doi', 'journal_title',
                                   'journal_abbrev_title', 'issn_print', 'issn_electronic',
                                   'publisher_name', 'publisher_loc']
-JournalMeta = namedtuple('JournalMeta',
-                         fields_openaccess_journal_meta,
-                         defaults=[None] * len(fields_openaccess_journal_meta))
+JournalMeta = create_namedtuple('JournalMeta', fields_openaccess_journal_meta)
 
+# Open Access Book/Chapter
 fields_openaccess_book_meta = ['doi', 'publisher_id', 'book_title_id', 'pub_date',
                                'isbn_print', 'isbn_electronic', 'publisher_name',
                                'publisher_loc']
-BookMeta = namedtuple('BookMeta',
-                      fields_openaccess_book_meta,
-                      defaults=[None] * len(fields_openaccess_book_meta))
+BookMeta = create_namedtuple('BookMeta', fields_openaccess_book_meta)
+
+fields_openaccess_chaper_meta = ['doi', 'chapter']
+ChapterMeta = create_namedtuple('ChapterMeta', fields_openaccess_chaper_meta)

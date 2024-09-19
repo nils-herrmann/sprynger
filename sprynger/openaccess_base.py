@@ -8,7 +8,7 @@ from sprynger.utils.data_structures import OpenAcessParagraph
 
 class OpenAccessBase(Retrieve):
     """Base class to retrieve OpenAccess from the Springer OpenAccess API."""
-    def get_paragraphs(self, document_type: str) -> list[list[OpenAcessParagraph]]:
+    def get_paragraphs(self, part_path: str) -> list[list[OpenAcessParagraph]]:
         """Paragraphs of the OpenAccess document.
 
         Returns:
@@ -17,13 +17,13 @@ class OpenAccessBase(Retrieve):
         """
         # Extract the paragraphs from the XML
         documents = []
-        for document in self.xml.findall(f'.//{document_type}'):
+        for document in self.xml.findall(part_path):
 
-            paragraphs = []
+            section_paragraphs = []
             sections = document.findall('.//body//sec')
             if len(sections) == 0:
                 sections = []
-  
+
             for section in sections:
                 section_id = section.get('id')
                 section_title = section.find('title').text if section.find('title') is not None else None
@@ -32,14 +32,14 @@ class OpenAccessBase(Retrieve):
                     paragraph_id = paragraph.get('id')
                     paragraph_text = ''.join(paragraph.itertext())
 
-                    data = OpenAcessParagraph(
-                            paragraph_id=paragraph_id,
-                            section_id=section_id,
-                            section_title=section_title,
-                            text=paragraph_text.strip()
+                    paragraph_data = OpenAcessParagraph(
+                        paragraph_id=paragraph_id,
+                        section_id=section_id,
+                        section_title=section_title,
+                        text=paragraph_text.strip()
                     )
-                    paragraphs.append(data)
-            documents.append(paragraphs)
+                    section_paragraphs.append(paragraph_data)
+            documents.append(section_paragraphs)
 
         return documents
 

@@ -38,7 +38,7 @@ def test_book_meta():
 
 def test_chapter_meta():
     """Test the chapter meta data."""
-    assert len(book.chapter_meta) == 4
+    assert len(book.chapter_meta) == 2
 
     assert len(chapter.chapter_meta) == 1
     assert chapter.chapter_meta == [
