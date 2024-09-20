@@ -45,7 +45,7 @@ class Metadata(Retrieve):
         """Contains the individual records that matched the query.
 
         Returns:
-            list: List of MetadataRecord objects which contain the following items of a 
+            list[MetadataRecord]: List of MetadataRecord objects which contain the following items of a 
             document: `contentType`, 
             `identifier`, `language`, `url`, `url_format`, `url_platform`, `title`, `creators`, 
             `publicationName`, `openaccess`, `doi`, `publisher`, `publicationDate`,
@@ -100,12 +100,7 @@ class Metadata(Retrieve):
                  max_results: int = 10,
                  cache: bool = True,
                  refresh: Union[bool, int] = False):
-        """Initialize the Metadata object to retrieve metadata from the Springer Metadata API. 
-        Depending on the type of identifier, the API will return either:
-
-        - doi: One single article 
-        - issn: All articles from a journal
-        - isbn: All chapters from a book
+        """Initialize the Metadata object to retrieve metadata from the Springer Metadata API.
 
         Args:
             identifier (str): The identifier of the article (doi) 
@@ -119,6 +114,8 @@ class Metadata(Retrieve):
                 it will be used as the cache expiration time in days. Defaults to False.
 
         Note:
+            - This class is iterable, allowing you to iterate over the metadata `records` retrieved.
+                It also supports indexing to access the metadata of specific documents.
             - All properties can be converted to a pandas DataFrame 
                 with `pd.DataFrame(object.property)`.          
         """
@@ -138,3 +135,47 @@ class Metadata(Retrieve):
                          max_results=self._max_results,
                          cache=cache,
                          refresh=refresh)
+        self._records = self.records
+
+    def __iter__(self):
+        return iter(self._records)
+
+    def __getitem__(self, index):
+        return self._records[index]
+
+    def __len__(self):
+        return len(self._records)
+
+
+class DocumentMetadata(Metadata):
+    """Class to retrieve the metadata of a **single** document from the Springer Metadata API."""
+    @property
+    def metadata(self) -> MetadataRecord:
+        """The metadata of a document.
+
+        Returns:
+            MetadataRecord: A MetadataRecord object containing the metadata of the document.
+        """
+        return self.records[0]
+
+    def __init__(self,
+                 doi: str,
+                 cache: bool = True,
+                 refresh: Union[bool, int] = False):
+        """Retrieve a **single** document metadata from the Springer Metadata API.
+
+        Args:
+            doi (str): The DOI of the document.
+            cache (bool): Whether to cache the results. Defaults to True.
+            refresh (bool|int): Weather to refresh the cache. If an integer is provided, 
+                it will be used as the cache expiration time in days. Defaults to False.
+        Note:
+            To retrieve the metadata of documents in a book or journal, use the Metadata class.
+        """
+
+        super().__init__(identifier=doi,
+                       id_type='doi',
+                       start=1,
+                       max_results=1,
+                       cache=cache,
+                       refresh=refresh)

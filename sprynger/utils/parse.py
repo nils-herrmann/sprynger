@@ -4,29 +4,6 @@ from typing import Optional
 
 from lxml.etree import _Element
 
-def chained_get(container, path, default=None):
-    """Helper function to perform a series of .get() methods on a dictionary
-    or return the `default`.
-
-    Parameters
-    ----------
-    container : dict
-        The dictionary on which the .get() methods should be performed.
-
-    path : list or tuple
-        The list of keys that should be searched for.
-
-    default : any (optional, default=None)
-        The object type that should be returned if the search yields
-        no result.
-    """
-    # Obtain value via reduce
-    try:
-        return reduce(lambda c, k: c.get(k, default), path, container)
-    except (AttributeError, TypeError):
-        return default
-
-
 def get_attr(node: _Element,
              tag: str,
              attr: str,
@@ -43,23 +20,6 @@ def get_text(node: _Element,
     if node.find(path) is not None:
         return node.find(path).text
     return None
-
-
-def listify(element):
-    """Helper function to turn an element into a list if it isn't a list yet.
-    """
-    if isinstance(element, list):
-        return element
-    else:
-        return [element]
-
-
-def make_float_if_possible(val):
-    """Attempt a conversion to float type."""
-    try:
-        return float(val)
-    except TypeError:
-        return val
 
 
 def make_int_if_possible(val):

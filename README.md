@@ -17,50 +17,56 @@ Springer Nature currently offers three APIs:
 **Note:** sprynger currently supports the Metadata and OpenAccess API
 
 ## 🪧 Example
+<div style="font-size: 12px;">
+
 ### Metadata
 ```py
 from sprynger import Metadata, OpenAccessJournal, OpenAccessBook, init
-
 init()
 ```
 ```py
-article_metadata = Metadata('10.1007/s10288-023-00561-5')
-article_metadata.records
+article = DocumentMetadata('10.1007/s10660-023-09761-x')
+article.metadata
 ```
->[MetadataRecord(contentType='Article', identifier='doi:10.1007/s10288-023-00561-5', language='en', ...)]
+> MetadataRecord(contentType='Article', identifier='doi:10.1007/s10660-023-09761-x', language='en', ...)
 
 ```py
-journal_metadata = Metadata('1422-6952', start=5, max_results=10)
-journal_metadata.facets
+book_metadata = Metadata('978-3-030-43582-0')
+for record in book_metadata:
+    print(record)
 ```
-> [MetadataFacets(facet='subject', value='Mathematical Methods in Physics', count='1075'),
-MetadataFacets(facet='subject', value='Physics', count='1075'),
-MetadataFacets(facet='subject', value='Fluid- and Aerodynamics', count='1062'), ...]
+> MetadataRecord(contentType='Chapter', title='Explanations of Machine Learning', abstract='There is an unavoidable tension...',...  
+> MetadataRecord(contentType='Chapter', title='From Holmes to AlphaGo', abstract='Holmes’s enduring interest was in the...',...  
+> ...
+
 
 ### OpenAccess
 ```py
-journal = OpenAccessJournal('2198-6053', cache=True, refresh=False)
-journal.journal_meta
+from sprynger import OpenAccessArticle, OpenAccessChapter, OpenAccessJournal, OpenAccessBook
+
+article = OpenAccessArticle('10.1007/s10288-023-00561-5')
+article.paragraphs[0]
 ```
-> JournalMeta(publisher_id='40747', doi=None, journal_title='Complex & Intelligent Systems', journal_abbrev_title='Complex Intell. Syst.', issn_print='2199-4536', ...)
+> OpenAcessParagraph(paragraph_id='Par2', ..., text='Continuing the first part of this paper, in which we provided a brief survey of the state of the art in multiple criteria decision aiding (MCDA)...')
 
 ```py
-journal.article_meta[1]
+journal = OpenAccessJournal('2198-6053')
+for article in journal:
+    print(article.metadata)
 ```
-> ArticleMeta(publisher_id='s40747-024-01487-z', manuscript='1487', doi='10.1007/s40747-024-01487-z')
+> ArticleMeta(article_type='correction', language='en', publisher_id='s40747-0...  
+> ArticleMeta(article_type='research-article', language='en', publisher_id='s40...  
+> ...
 
-```py
-journal.paragraphs[1]
-```
-> [OpenAcessParagraph(paragraph_id='Par2', section_id='Sec1', section_title='Introduction', text='Facing the ...,
- OpenAcessParagraph(paragraph_id='Par3', section_id='Sec1', section_title='Introduction', text='In order ...,
-...]
 ```py
 book = OpenAccessBook("978-3-031-63500-7", start=1, max_results=2, refresh=30)
-book.paragraphs[1]
+for chapter in book:
+    print(chapter.metadata)
 ```
-[OpenAcessParagraph(paragraph_id='Par2', section_id='Sec1', section_title='Introduction', text='The characterisation of ...,
-OpenAcessParagraph(paragraph_id='Par3', section_id='Sec1', section_title='Introduction', text='Establishing ...,...]
+> ChapterMeta(doi='10.1007/978-3-031-63501-4_13', chapter='13')  
+> ChapterMeta(doi='10.1007/978-3-031-63501-4_18', chapter='18')
+
+</div>
 
 ## 📖 Documentation
 For a comprehensive guide, see the documentation in [read the docs](https://sprynger.readthedocs.io/en/latest/index.html).
