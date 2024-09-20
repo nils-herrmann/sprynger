@@ -1,5 +1,5 @@
 Start-up
-~~~~~~~~
+========
 
 You initalize `sprynger` as follows:
 
@@ -15,7 +15,7 @@ In case you don't have a configuration file just enter your API key when prompte
 
 
 Configuration
-~~~~~~~~~~~~~
+=============
 
 `sprynger` stores values it needs for operation in a configuration file called `sprynger.cfg`. 
 The config file saves credentials as well as directory names for folders that store downloaded results.
@@ -28,9 +28,10 @@ By default, after initial set-up (see below), the file will look like this:
 .. code-block:: cfg
 
     [Directories]
-    Metadata = home_dir/.cache/sprynger/metadata
-    Meta = home_dir/.cache/sprynger/meta
-    OpenAccess = home_dir/.cache/sprynger/open_access
+    Metadata = /Users/nilsherrmann/.cache/sprynger/metadata
+    Meta = /Users/nilsherrmann/.cache/sprynger/meta
+    OpenAccessJournal = /Users/nilsherrmann/.cache/sprynger/open_access/journal
+    OpenAccessBook = /Users/nilsherrmann/.cache/sprynger/open_access/book
 
     [Authentication]
     APIKey = XXX

@@ -21,7 +21,7 @@ Springer Nature currently offers three APIs:
 
 ### Metadata
 ```py
-from sprynger import Metadata, OpenAccessJournal, OpenAccessBook, init
+from sprynger import DocumentMetadata, Metadata, init
 init()
 ```
 ```py

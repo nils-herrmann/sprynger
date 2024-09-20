@@ -1,4 +1,8 @@
-"""Module with the Metadata class."""
+"""There are two classes in this module:
+
+- **DocumentMetadata:** Retrieve the metadata of a *single* document from the Springer Metadata API.
+- **Metadata:** Retrieve the metadata of a documents associated with a journal or book from the Springer Metadata API.
+"""
 from typing import Literal, Optional, Union
 
 from sprynger.retrieve import Retrieve
@@ -45,12 +49,12 @@ class Metadata(Retrieve):
         """Contains the individual records that matched the query.
 
         Returns:
-            list[MetadataRecord]: List of MetadataRecord objects which contain the following items of a 
-            document: `contentType`, 
+            list[MetadataRecord]: List of MetadataRecord objects which contain the following
+            items of a document: `contentType`, 
             `identifier`, `language`, `url`, `url_format`, `url_platform`, `title`, `creators`, 
             `publicationName`, `openaccess`, `doi`, `publisher`, `publicationDate`,
             `publicationType`, `issn`, `volume`, `number`, `genre`, `startingPage`, 
-            `endingPage`,`journalId`, `copyright`, `abstract` and `subjects`.
+            `endingPage`, `journalId`, `copyright`, `abstract` and `subjects`.
         """
         records_list = []
         for record in self.json.get('records', []):
@@ -100,8 +104,7 @@ class Metadata(Retrieve):
                  max_results: int = 10,
                  cache: bool = True,
                  refresh: Union[bool, int] = False):
-        """Initialize the Metadata object to retrieve metadata from the Springer Metadata API.
-
+        """
         Args:
             identifier (str): The identifier of the article (doi) 
                 or the journal (issn) or book (isbn).
@@ -113,9 +116,15 @@ class Metadata(Retrieve):
             refresh (bool|int): Weather to refresh the cache. If an integer is provided, 
                 it will be used as the cache expiration time in days. Defaults to False.
 
+        This class is iterable, allowing you to iterate over the metadata `records` retrieved.
+        It also supports indexing to access the metadata of specific documents.
+
+        Example:
+            >>> metadata = Metadata('id-book-or-journal')
+            >>> for record in metadata:
+            >>>     print(record)
+     
         Note:
-            - This class is iterable, allowing you to iterate over the metadata `records` retrieved.
-                It also supports indexing to access the metadata of specific documents.
             - All properties can be converted to a pandas DataFrame 
                 with `pd.DataFrame(object.property)`.          
         """
@@ -148,13 +157,18 @@ class Metadata(Retrieve):
 
 
 class DocumentMetadata(Metadata):
-    """Class to retrieve the metadata of a **single** document from the Springer Metadata API."""
+    """Class to retrieve the metadata of a *single* document from the Springer Metadata API."""
     @property
     def metadata(self) -> MetadataRecord:
         """The metadata of a document.
 
         Returns:
             MetadataRecord: A MetadataRecord object containing the metadata of the document.
+            This object contains the following items: `contentType`, 
+            `identifier`, `language`, `url`, `url_format`, `url_platform`, `title`, `creators`, 
+            `publicationName`, `openaccess`, `doi`, `publisher`, `publicationDate`,
+            `publicationType`, `issn`, `volume`, `number`, `genre`, `startingPage`, 
+            `endingPage`, `journalId`, `copyright`, `abstract` and `subjects`.
         """
         return self.records[0]
 
@@ -170,7 +184,7 @@ class DocumentMetadata(Metadata):
             refresh (bool|int): Weather to refresh the cache. If an integer is provided, 
                 it will be used as the cache expiration time in days. Defaults to False.
         Note:
-            To retrieve the metadata of documents in a book or journal, use the Metadata class.
+            To retrieve the metadata of all the documents in a book or journal, use the Metadata class.
         """
 
         super().__init__(identifier=doi,

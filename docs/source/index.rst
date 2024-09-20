@@ -48,8 +48,8 @@ Import the classes and initialize the library:
 
 .. code-block:: python
 
-    from sprynger import Metadata, OpenAccessJournal, OpenAccessBook, init
-
+    from sprynger import DocumentMetadata, Metadata, init
+    
     init()
 
 Retrieve metadata
