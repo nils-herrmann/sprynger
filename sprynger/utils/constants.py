@@ -9,11 +9,20 @@ BASE_PATH = Path.home()/'.cache'/'sprynger'
 DEFAULT_PATHS = {
     'Metadata': BASE_PATH/'metadata',
     'Meta': BASE_PATH/'meta',
-    'OpenAccess': BASE_PATH/'open_access',
+    'OpenAccessJournal': BASE_PATH/'open_access'/'journal',
+    'OpenAccessBook': BASE_PATH/'open_access'/'book',
+}
+
+ONLINE_API = {
+    'Metadata': 'metadata',
+    'Meta': '/meta/v2',
+    'OpenAccessJournal': 'openaccess',
+    'OpenAccessBook': 'openaccess'
 }
 
 FORMAT = {
     'Metadata': 'json',
     'Meta': 'json',
-    'OpenAccess': 'jats'
+    'OpenAccessJournal': 'jats',
+    'OpenAccessBook': 'jats'
 }

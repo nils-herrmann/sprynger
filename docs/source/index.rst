@@ -6,6 +6,8 @@
 sprynger: API wrapper for Springer Nature
 ============================================
 
+.. currentmodule:: sprynger
+
 Simple API wrapper for the `Springer Nature APIs <https://dev.springernature.com>`_
 
 .. image:: https://badge.fury.io/py/sprynger.svg
@@ -50,24 +52,55 @@ Import the classes and initialize the library:
 
     init()
 
-Retrieve data by providing the identifier of the journal/article or book/chapter
+Retrieve metadata
 
 .. code-block:: python
 
-    article_metadata = Metadata('10.1007/s10288-023-00561-5')
-    article_metadata.records
+    article = DocumentMetadata('10.1007/s10660-023-09761-x')
+    article.metadata
 
-> [MetadataRecord(contentType='Article', identifier='doi:10.1007/s10288-023-00561-5', language='en', ...)]
+> MetadataRecord(contentType='Article', identifier='doi:10.1007/s10660-023-09761-x', language='en', ...)
+
+
+.. code-block:: python
+
+    book_metadata = Metadata('978-3-030-43582-0')
+    for record in book_metadata:
+        print(record)
+
+> MetadataRecord(contentType='Chapter', title='Explanations of Machine Learning', abstract='There is an unavoidable tension...',...  
+> MetadataRecord(contentType='Chapter', title='From Holmes to AlphaGo', abstract='Holmes’s enduring interest was in the...',...  
+> ...
+
+OpenAccess
+
+.. code-block:: python
+
+    from sprynger import OpenAccessArticle, OpenAccessChapter, OpenAccessJournal, OpenAccessBook
+
+    article = OpenAccessArticle('10.1007/s10288-023-00561-5')
+    article.paragraphs[0]
+
+> OpenAcessParagraph(paragraph_id='Par2', ..., text='Continuing the first part of this paper, in which we provided a brief survey of the state of the art in multiple criteria decision aiding (MCDA)...')
 
 .. code-block:: python
 
     journal = OpenAccessJournal('2198-6053')
-    journal.article_meta[1]
+    for article in journal:
+        print(article.metadata)
 
-> ArticleMeta(publisher_id='s40747-024-01487-z', manuscript='1487', doi='10.1007/s40747-024-01487-z')
+> ArticleMeta(article_type='correction', language='en', publisher_id='s40747-0...  
+> ArticleMeta(article_type='research-article', language='en', publisher_id='s40...  
+> ...
 
+.. code-block:: python
 
-.. currentmodule:: sprynger
+    book = OpenAccessBook("978-3-031-63500-7", start=1, max_results=2, refresh=30)
+    for chapter in book:
+        print(chapter.metadata)
+
+> ChapterMeta(doi='10.1007/978-3-031-63501-4_13', chapter='13')  
+> ChapterMeta(doi='10.1007/978-3-031-63501-4_18', chapter='18')
 
 🚀 Initialization
 -----------------
@@ -85,7 +118,8 @@ Retrieve data by providing the identifier of the journal/article or book/chapter
     :maxdepth: 1
 
     classes/Metadata.rst
-    classes/OpenAccess.rst
+    classes/OpenAccessJournal.rst
+    classes/OpenAccessBook.rst
 
 
 

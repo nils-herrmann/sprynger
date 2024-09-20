@@ -1,21 +1,68 @@
 """Tests for the metadata module."""
 from sprynger import init
-from sprynger import Metadata
+from sprynger import Metadata, DocumentMetadata
 from sprynger.utils.data_structures import MetadataCreator, MetadataFacets, MetadataRecord
 
 init()
 
-journal_metadata = Metadata('3004-9261', start=1, max_results=2, refresh=30)
+journal_metadata = Metadata('3004-9261', start=1, max_results=2, refresh=True)
 article_metadata = Metadata('10.1186/s43593-023-00053-3', refresh=30)
 book_metadata = Metadata('978-1-0716-1418-1', start=1, max_results=3, refresh=30)
+single_article_metadata = DocumentMetadata('10.1007/s10660-023-09761-x', refresh=30)
 
 def test_book():
+    """Test the book metadata."""
     for book in book_metadata.records:
         assert book.contentType == 'Chapter'
         assert book.publicationName == 'An Introduction to Statistical Learning'
 
 
+def test_single_article():
+    """Test the single article metadata."""
+    expected_metadata = MetadataRecord(
+        contentType="Article",
+        identifier="doi:10.1007/s10660-023-09761-x",
+        language="en",
+        url="http://dx.doi.org/10.1007/s10660-023-09761-x",
+        url_format="",
+        url_platform="",
+        title="From clicks to consequences: a multi-method review of online grocery shopping",
+        creators=[
+            MetadataCreator(creator="Shroff, Arvind", ORCID="0000-0002-8544-5361"),
+            MetadataCreator(creator="Kumar, Satish", ORCID="0000-0001-5200-1476"),
+            MetadataCreator(creator="Martinez, Luisa M.", ORCID=None),
+            MetadataCreator(creator="Pandey, Nitesh", ORCID=None),
+        ],
+        publicationName="Electronic Commerce Research",
+        openaccess=False,
+        doi="10.1007/s10660-023-09761-x",
+        publisher="Springer",
+        publicationDate="2024-06-01",
+        publicationType="Journal",
+        issn="1572-9362",
+        volume=24,
+        number=2,
+        genre="OriginalPaper",
+        startingPage=925,
+        endingPage=964,
+        journalId=10660,
+        copyright="©2023 The Author(s), under exclusive licence to Springer Science+Business Media, LLC, part of Springer Nature",
+        abstract="The academic interest in Online Grocery Shopping (OGS) has proliferated in retailing and business management over the past two decades. Previous research on OGS was primarily focused on consumer-level consequences such as purchase intention, purchase decision, and post-purchase behavior. However, there is a lack of literature integrating intrinsic and extrinsic factors that influence the growth of OGS and its impact on purchase outcomes. To address this, we conduct a multi-method review combining traits of a systematic literature review and bibliometric analysis. Analyzing 145 articles through word cloud and keyword co-occurrence analysis, we identify publication trends (top journals, articles) and nine thematic clusters. We develop an integrated conceptual framework encompassing the antecedents, mediators, moderators, and consequences of OGS. Finally, we outline future research directions using Theory-Context-Characteristics-Methods framework to serve as a reference point for future researchers working in OGS.",
+        subjects=[
+            "Business and Management",
+            "IT in Business",
+            "Data Structures and Information Theory",
+            "Operations Research/Decision Theory",
+            "Computer Communication Networks",
+            "Business and Management, general",
+            "e-Commerce/e-business",
+        ],
+    )
+    assert single_article_metadata.metadata == expected_metadata
+
+
 def test_journal():
+    """Test the journal metadata."""
     for article in journal_metadata.records:
         assert article.publicationName == 'Discover Applied Sciences'
         assert article.issn == '3004-9261'
@@ -23,12 +70,18 @@ def test_journal():
 
 
 def test_len():
+    """Test the length of the metadata."""
     assert len(article_metadata.records) == 1
+
     assert len(journal_metadata.records) == 2
+    assert len(journal_metadata) == 2
+
     assert len(book_metadata.records) == 3
-    
+    assert len(book_metadata) == 3
+
 
 def test_factets():
+    """Test the facets."""
     assert len(article_metadata.facets) == 11
 
     expected = MetadataFacets(facet='subject', value='Physics', count='1')
@@ -36,6 +89,7 @@ def test_factets():
 
 
 def test_records():
+    """Test the records."""
     expected = MetadataRecord(contentType='Article',
                               identifier='doi:10.1186/s43593-023-00053-3',
                               language='en',
@@ -70,11 +124,13 @@ def test_records():
 
 
 def test_results():
+    """Test the results."""
     expected = {'total': '1', 'start': '1', 'pageLength': '10', 'recordsDisplayed': '1'}
     assert article_metadata.results == expected
 
 
 def test_wrong_id_type():
+    """Test the wrong identifier type."""
     try:
         Metadata('12345678901234567890')
     except ValueError as e:

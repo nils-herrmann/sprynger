@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 from lxml import etree
 
-from sprynger.utils.constants import BASE_URL, FORMAT
+from sprynger.utils.constants import BASE_URL, FORMAT, ONLINE_API
 from sprynger.utils.fetch import fetch_data
 from sprynger.utils.startup import get_config
 
@@ -35,7 +35,7 @@ class Retrieve():
     def __init__(self,
                  identifier: str,
                  id_type: Optional[Literal['doi', 'issn', 'isbn']],
-                 api: Literal['Metadata', 'Meta', 'OpenAccess'],
+                 api: Literal['Metadata', 'Meta', 'OpenAccessJournal', 'OpenAccessBook'],
                  start: int = 1,
                  max_results: int = 10,
                  cache: bool = True,
@@ -44,11 +44,12 @@ class Retrieve():
         config = get_config()
 
         self._api = api
-        self._url = f'{BASE_URL}/{api.lower()}/{FORMAT[api]}'
+        self._online_api = ONLINE_API[api]
+        self._url = f'{BASE_URL}/{self._online_api}/{FORMAT[api]}'
         self._params = {'q': f'{id_type}:{identifier}',
-                       's': start,
-                       'p': max_results,
-                       'api_key': config.get('Authentication', 'APIKey')}
+                        's': start,
+                        'p': max_results,
+                        'api_key': config.get('Authentication', 'APIKey')}
 
         # Generate a cache key based on the parameters
         cache_dir = config.get('Directories', api)
@@ -117,4 +118,3 @@ class CachedResponse:
         if self.is_xml:
             return self._data.encode()
         return json.dumps(self._data).encode()
-
