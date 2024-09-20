@@ -1,8 +1,7 @@
 """Module with two classes to retrieve data from Springer Books:
 
-- OpenAccessBook: class to retrieve data and articles of a book (Single chapters can also be queried).
-- OpenAccessChapter: class to retrieve a single chapter from Springer Open Access Books.
-
+- **OpenAccessChapter:** class to retrieve a *single* chapter from Springer Open Access Books.
+- **OpenAccessBook:** class to retrieve data and articles of a book (Single chapters can also be queried).
 """
 from typing import Literal, Optional, Union
 
@@ -22,8 +21,7 @@ class _Chapter:
         """Metadata of the book chapter(s).
         
         Returns:
-            ChapterMeta: A list of ChapterMeta objects containing the 
-            `doi` and `chapter`.
+            ChapterMeta: A list of ChapterMeta objects containing the `doi` and `chapter`.
         """
         doi, chapter = None, None
         metadata  =  self._data.find('.//book-part-meta')
@@ -41,7 +39,7 @@ class _Chapter:
         """Paragraphs of the book chapter.
         
         Returns:
-            list[OpenAcessParagraph]: A list of OpenAcessParagraph objects containing the 
+            list[OpenAcessParagraph]: A list of OpenAcessParagraph objects containing the
             `paragraph_id`, `section_id`, `section_title`, and `text`.
         """
         return get_paragraphs(self._data)

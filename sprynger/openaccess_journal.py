@@ -1,7 +1,7 @@
 """Module with two classes to retrieve data from Springer Journals:
 
-- OpenAccessJournal: class to retrieve data and articles of a journal (Single articles can also be queried).
-- OpenAccessArticle: class to retrieve a single article from Springer Open Access Journals.
+- **OpenAccessArticle:** class to retrieve a *single* article from Springer Open Access Journals.
+- **OpenAccessJournal:** class to retrieve data and articles of a journal (Single articles can also be queried).
 """
 from typing import Literal, Optional, Union
 
@@ -18,8 +18,8 @@ class _Article:
         """Metadata of an article.
         
         Returns:
-            ArticleMeta: ArticleMeta objects containing the `article_type`, `language`, 
-                `publisher_id`, `manuscript`, and `doi`.
+            ArticleMeta: ArticleMeta objects containing the `article_type`, `language`,
+            `publisher_id`, `manuscript`, and `doi`.
         """
         article_type = self._data.get('article-type')
         language = self._data.get('{http://www.w3.org/XML/1998/namespace}lang')
@@ -40,7 +40,7 @@ class _Article:
 
     @property
     def paragraphs(self) -> list[OpenAcessParagraph]:
-        """Paragraphs of the article as list of OpenAcessParagraph named tuples.
+        """Paragraphs of the article.
 
         Returns:
             list[OpenAcessParagraph]: A list of OpenAcessParagraph objects containing the 
@@ -58,9 +58,9 @@ class OpenAccessJournal(Retrieve):
         """Metadata of the journal.
         
         Returns:
-            JournalMeta: JournalMeta objects containing the 
-            `publisher_id`, `doi`, `journal_title`, `journal_abbrev_title`, `issn_print`, 
-            `issn_electronic`, `publisher_name`, and `publisher_loc`.
+            JournalMeta: JournalMeta objects containing the `publisher_id`, `doi`, `journal_title`,
+            `journal_abbrev_title`, `issn_print`, `issn_electronic`, `publisher_name`,
+            and `publisher_loc`.
         """
         publisher_id, doi, journal_title = None, None, None
         journal_abbrev_title, issn_print, issn_electronic = None, None, None
@@ -99,7 +99,7 @@ class OpenAccessJournal(Retrieve):
         """
         Args:
             identifier (str): The identifier of the journal (ISSN).
-                Providing a doi will return just one article.
+                Providing a DOI will return just one article.
             id_type (Optional[Literal['doi', 'issn']]): The type of the identifier.
                 If not provided, it will be detected automatically.
             start (int): The starting index for the results. Defaults to 1.
