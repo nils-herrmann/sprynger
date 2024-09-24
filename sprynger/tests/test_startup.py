@@ -3,20 +3,11 @@ from pathlib import Path
 
 from sprynger import init
 from sprynger.utils.startup import CUSTOM_KEYS, get_config, get_keys
-from sprynger import OpenAccessBook
 
 
 def test_empty_keys():
     """Test the empty keys."""
     assert CUSTOM_KEYS is None
-
-
-def test_file_not_found():
-    """Test the FileNotFoundError."""
-    try:
-        _ = OpenAccessBook("10.1007/978-3-031-61874-1_5", refresh=30)
-    except FileNotFoundError:
-        assert True
 
 
 def test_init():

@@ -6,13 +6,14 @@ import json
 from json.decoder import JSONDecodeError
 from typing import Optional, Literal, Union
 from datetime import datetime, timedelta
+import warnings
 
 from lxml import etree
 from requests import Response
 
 from sprynger.utils.constants import BASE_URL, FORMAT, LIMIT, ONLINE_API
 from sprynger.utils.fetch import fetch_data
-from sprynger.utils.startup import get_config
+from sprynger.utils.startup import get_config, get_keys
 
 
 
@@ -49,11 +50,12 @@ class Retrieve():
         rate_limit = LIMIT['Premium'][api] if premium else LIMIT['Basic'][api]
         self._limit = min(nr_results, rate_limit)
 
+        keys = get_keys()
         self._url = f'{BASE_URL}/{self._online_api}/{FORMAT[api]}'
         self._params = {'q': f'{id_type}:{identifier}',
                         's': start,
                         'p': self._limit,
-                        'api_key': config.get('Authentication', 'APIKey')}
+                        'api_key': keys[0]}
 
         # Generate a cache key based on the parameters
         cache_dir = config.get('Directories', api)
@@ -63,9 +65,16 @@ class Retrieve():
         self._cache = cache
 
         self._res = self._fetch_or_load()
-        self._n_found = self._get_total_results()
+        n_found = self._get_total_results()
 
-        n = min(nr_results, self._n_found)
+        if n_found == 0:
+            warnings.warn('No results where found. Check the identifier.', UserWarning)
+        elif n_found < nr_results:
+            w_message = (f'Too many results requested. '
+                         f'{n_found} document(s) found but {nr_results} requested.')
+            warnings.warn(w_message, UserWarning)
+
+        n = min(nr_results, n_found)
         n_chunks = ceil(n / self._limit)
         for i in range(1, n_chunks):
             new_start = start + i * self._limit

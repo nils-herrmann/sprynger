@@ -1,4 +1,6 @@
 """Tests for the OpenAccessBook class."""
+import pytest
+
 from sprynger import init
 from sprynger import OpenAccessBook, OpenAccessChapter
 from sprynger.openaccess_book import _Chapter
@@ -7,9 +9,11 @@ from sprynger.utils.data_structures import BookMeta, ChapterMeta, OpenAcessParag
 init()
 
 book = OpenAccessBook("978-3-031-63500-7", start=1, nr_results=2, refresh=30)
-book_pagination = OpenAccessBook('978-3-031-63498-7', nr_results=30, refresh=True)
 chapter = OpenAccessChapter("10.1007/978-3-031-61874-1_5", refresh=30)
 chapter_with_text = OpenAccessChapter("10.1007/978-3-031-24498-8_7", refresh=30)
+
+with pytest.warns(UserWarning):
+    book_pagination = OpenAccessBook('978-3-031-63498-7', nr_results=30, refresh=True)
 
 
 def test_book_meta():

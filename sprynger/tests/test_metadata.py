@@ -1,4 +1,6 @@
 """Tests for the metadata module."""
+import pytest
+
 from sprynger import init
 from sprynger import Metadata, DocumentMetadata
 from sprynger.utils.data_structures import MetadataCreator, MetadataFacets, MetadataRecord, MetadataResult
@@ -6,10 +8,12 @@ from sprynger.utils.data_structures import MetadataCreator, MetadataFacets, Meta
 init()
 
 journal_metadata = Metadata('3004-9261', start=1, nr_results=2, refresh=True)
-article_metadata = Metadata('10.1186/s43593-023-00053-3', refresh=30)
 book_metadata = Metadata('978-1-0716-1418-1', start=1, nr_results=3, refresh=30)
 single_article_metadata = DocumentMetadata('10.1007/s10660-023-09761-x', refresh=30)
 meta_pagination = Metadata('2662-9984', nr_results=30, refresh=30)
+
+with pytest.warns(UserWarning):
+    article_metadata = Metadata('10.1186/s43593-023-00053-3', refresh=30)
 
 def test_book():
     """Test the book metadata."""
