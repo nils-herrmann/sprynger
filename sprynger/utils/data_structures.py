@@ -9,6 +9,9 @@ def create_namedtuple(name: str, fields: list, defaults=None):
 #############################
 #          Metadata         #
 #############################
+fields_metadata_results = ['total', 'start', 'pageLength', 'recordsRetrieved']
+MetadataResult = create_namedtuple('MetadataResult', fields_metadata_results)
+
 fields_metadata_record = ['contentType', 'identifier', 'language', 'url',
                           'url_format', 'url_platform' ,'title', 'creators',
                           'publicationName', 'openaccess', 

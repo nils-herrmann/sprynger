@@ -1,4 +1,4 @@
-"""Constants for the sprynger package."""
+'''Constants for the sprynger package.'''
 from pathlib import Path
 
 BASE_URL = 'http://api.springernature.com'
@@ -25,4 +25,19 @@ FORMAT = {
     'Meta': 'json',
     'OpenAccessJournal': 'jats',
     'OpenAccessBook': 'jats'
+}
+
+LIMIT = {
+    'Basic': {
+        'Metadata': 25,
+        'Meta': 25,
+        'OpenAccessJournal': 20,
+        'OpenAccessBook': 20,
+    },
+    'Premium': {
+        'Metadata': 25,
+        'Meta': 25,
+        'OpenAccessJournal': 20,
+        'OpenAccessBook': 20,
+    },
 }

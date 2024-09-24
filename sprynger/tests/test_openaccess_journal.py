@@ -6,7 +6,8 @@ from sprynger.utils.data_structures import ArticleMeta, JournalMeta, OpenAcessPa
 
 init()
 
-journal = OpenAccessJournal("2198-6053", start=4, max_results=3, refresh=30)
+journal = OpenAccessJournal("2198-6053", start=4, nr_results=3, refresh=30)
+journal_pagination = OpenAccessJournal('2198-6584', nr_results=26, refresh=30)
 article = OpenAccessArticle("10.1007/s40747-024-01577-y", refresh=30)
 
 def test_article_meta():
@@ -53,6 +54,12 @@ def test_journal_meta():
                                         publisher_loc='Cham')
 
     assert article.journal_metadata == expected_article_journal_meta
+
+def test_pagination():
+    """Test the pagination."""
+    assert len(journal_pagination) == 26
+    dois = set([article.metadata.doi for article in journal_pagination])
+    assert len(dois) == 26
 
 
 def test_paragraphs():

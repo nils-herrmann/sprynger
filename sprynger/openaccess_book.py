@@ -87,7 +87,8 @@ class OpenAccessBook(Retrieve):
                 identifier: str,
                 id_type: Optional[Literal['doi', 'isbn']] = None,
                 start: int = 1,
-                max_results: int = 10,
+                nr_results: int = 10,
+                premium: bool = False,
                 cache: bool = True,
                 refresh: Union[bool, int] = False):
         """
@@ -97,7 +98,8 @@ class OpenAccessBook(Retrieve):
             id_type (Optional[Literal['doi', 'isbn']], optional): Type of the identifier
               Defaults to None.
             start (int, optional): Start index of the results. Defaults to 1.
-            max_results (int): The maximum number of results to retrieve. Defaults to 10.
+            nr_results (int): The number of results to retrieve. Defaults to 10.
+            premium (bool): Whether the user has a premium account. Defaults to False.
             cache (bool): Whether to cache the results. Defaults to True.
             refresh (bool|int): Weather to refresh the cache. If an integer is provided, 
                 it will be used as the cache expiration time in days. Defaults to False.
@@ -116,7 +118,7 @@ class OpenAccessBook(Retrieve):
         self._id = identifier
         self._id_type = id_type
         self._start = start
-        self._max_results = max_results
+        self._nr_results = nr_results
 
         # Detect the identifier type if not provided
         if self._id_type is None:
@@ -126,7 +128,8 @@ class OpenAccessBook(Retrieve):
                         id_type=self._id_type,
                         api='OpenAccessBook',
                         start=self._start,
-                        max_results=self._max_results,
+                        nr_results=self._nr_results,
+                        premium=premium,
                         cache=cache,
                         refresh=refresh)
 
@@ -182,7 +185,7 @@ class OpenAccessChapter(_Chapter):
         self._book_object = OpenAccessBook(identifier=doi,
                                            id_type='doi',
                                            start=1,
-                                           max_results=1,
+                                           nr_results=1,
                                            cache=cache,
                                            refresh=refresh)
         self._chapter_object = self._book_object.chapters[0]
