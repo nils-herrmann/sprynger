@@ -4,6 +4,7 @@ from typing import Optional
 
 from lxml.etree import _Element
 
+
 def get_attr(node: _Element,
              tag: str,
              attr: str,

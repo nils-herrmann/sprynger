@@ -6,7 +6,8 @@ from sprynger.utils.data_structures import BookMeta, ChapterMeta, OpenAcessParag
 
 init()
 
-book = OpenAccessBook("978-3-031-63500-7", start=1, max_results=2, refresh=30)
+book = OpenAccessBook("978-3-031-63500-7", start=1, nr_results=2, refresh=30)
+book_pagination = OpenAccessBook('978-3-031-63498-7', nr_results=30, refresh=True)
 chapter = OpenAccessChapter("10.1007/978-3-031-61874-1_5", refresh=30)
 chapter_with_text = OpenAccessChapter("10.1007/978-3-031-24498-8_7", refresh=30)
 
@@ -66,3 +67,10 @@ def test_paragraphs():
         text="Research Question: What are the salient points that Data Scientists should be aware of when it comes to Data Governance within organizations?",
     )
     assert chapter_with_text.paragraphs[4] == expected_paragraph
+
+
+def test_pagination():
+    """Test the pagination."""
+    assert len(book_pagination) == 27
+    dois = set([chapter.metadata.doi for chapter in book_pagination])
+    assert len(dois) == 27

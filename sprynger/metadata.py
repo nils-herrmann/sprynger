@@ -7,7 +7,7 @@ from typing import Literal, Optional, Union
 
 from sprynger.retrieve import Retrieve
 from sprynger.utils.fetch import detect_id_type
-from sprynger.utils.data_structures import MetadataCreator, MetadataFacets, MetadataRecord
+from sprynger.utils.data_structures import MetadataCreator, MetadataFacets, MetadataRecord, MetadataResult
 from sprynger.utils.parse import make_int_if_possible, str_to_bool
 
 
@@ -33,16 +33,22 @@ class Metadata(Retrieve):
         return facets_list
 
     @property
-    def results(self) -> dict:
-        """Dictionary with an overview of the results of the query.
+    def results(self) -> MetadataResult:
+        """Overview of the results of the query.
 
         Returns:
-            dict: A dictionary containing the following keys the `total` matches found, `start` 
-            index of the first result, `pageLength` number of results per page, `recordsDisplayed` 
-            number of records displayed.
+            MetadataResult: An object containing the the `total` matches found, `start` 
+            index of the first result, max `pageLength` when paginating and the number of 
+            `recordsRetrieved`.
         """
-        res = self.json.get('result', [{}])
-        return res[0]
+        res = self.json.get('result', [{}])[0]
+        total_results = int(res.get('total', 0))
+        nr_results = min(self._nr_results, total_results)
+        out = MetadataResult(total=total_results,
+                             start=int(res.get('start', 0)),
+                             pageLength=int(res.get('pageLength', 0)),
+                             recordsRetrieved=nr_results)
+        return out
 
     @property
     def records(self) -> list[MetadataRecord]:
@@ -101,7 +107,8 @@ class Metadata(Retrieve):
                  identifier: str,
                  id_type: Optional[Literal['doi', 'issn', 'isbn']] = None,
                  start: int = 1,
-                 max_results: int = 10,
+                 nr_results: int = 10,
+                 premium: bool = False,
                  cache: bool = True,
                  refresh: Union[bool, int] = False):
         """
@@ -111,7 +118,8 @@ class Metadata(Retrieve):
             id_type (Optional[Literal['doi', 'issn', 'isbn']]): The type of the identifier.
                 If not provided, it will be detected automatically.
             start (int): The starting index for the results. Defaults to 1.
-            max_results (int): The maximum number of results to retrieve. Defaults to 10.
+            nr_results (int): The number of results to retrieve. Defaults to 10.
+            premium (bool): Whether the user has a premium account. Defaults to False.
             cache (bool): Whether to cache the results. Defaults to True.
             refresh (bool|int): Weather to refresh the cache. If an integer is provided, 
                 it will be used as the cache expiration time in days. Defaults to False.
@@ -125,14 +133,14 @@ class Metadata(Retrieve):
             >>>     print(record)
      
         Note:
-            - All properties can be converted to a pandas DataFrame 
-                with `pd.DataFrame(object.property)`.          
+            - All properties can be converted to a pandas DataFrame with `pd.DataFrame(object.property)`.
+
         """
 
         self._id = identifier
         self._id_type = id_type
         self._start = start
-        self._max_results = max_results
+        self._nr_results = nr_results
 
         if self._id_type is None:
             self._id_type = detect_id_type(self._id)
@@ -141,7 +149,8 @@ class Metadata(Retrieve):
                          id_type=self._id_type,
                          api='Metadata',
                          start=self._start,
-                         max_results=self._max_results,
+                         nr_results=self._nr_results,
+                         premium=premium,
                          cache=cache,
                          refresh=refresh)
         self._records = self.records
@@ -190,6 +199,6 @@ class DocumentMetadata(Metadata):
         super().__init__(identifier=doi,
                        id_type='doi',
                        start=1,
-                       max_results=1,
+                       nr_results=1,
                        cache=cache,
                        refresh=refresh)

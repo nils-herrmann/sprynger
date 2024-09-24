@@ -93,7 +93,8 @@ class OpenAccessJournal(Retrieve):
                 identifier: str,
                 id_type: Optional[Literal['doi', 'issn']] = None,
                 start: int = 1,
-                max_results: int = 10,
+                nr_results: int = 10,
+                premium: bool = False,
                 cache: bool = True,
                 refresh: Union[bool, int] = False):
         """
@@ -103,7 +104,8 @@ class OpenAccessJournal(Retrieve):
             id_type (Optional[Literal['doi', 'issn']]): The type of the identifier.
                 If not provided, it will be detected automatically.
             start (int): The starting index for the results. Defaults to 1.
-            max_results (int): The maximum number of results to retrieve. Defaults to 10.
+            nr_results (int): The number of results to retrieve. Defaults to 10.
+            premium (bool): Whether the user has a premium account. Defaults to False.
             cache (bool): Whether to cache the results. Defaults to True.
             refresh (bool|int): Weather to refresh the cache. If an integer is provided, 
                 it will be used as the cache expiration time in days. Defaults to False.
@@ -121,7 +123,7 @@ class OpenAccessJournal(Retrieve):
         self._id = identifier
         self._id_type = id_type
         self._start = start
-        self._max_results = max_results
+        self._nr_results = nr_results
 
         # Detect the identifier type if not provided
         if self._id_type is None:
@@ -131,7 +133,8 @@ class OpenAccessJournal(Retrieve):
                         id_type=self._id_type,
                         api='OpenAccessJournal',
                         start=self._start,
-                        max_results=self._max_results,
+                        nr_results=self._nr_results,
+                        premium=premium,
                         cache=cache,
                         refresh=refresh)
 
@@ -191,7 +194,7 @@ class OpenAccessArticle(_Article):
         self._journal_object = OpenAccessJournal(identifier=doi,
                                          id_type='doi',
                                          start=1,
-                                         max_results=1,
+                                         nr_results=1,
                                          cache=cache,
                                          refresh=refresh)
         self._article_object = self._journal_object.articles[0]
