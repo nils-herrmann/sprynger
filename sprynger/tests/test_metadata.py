@@ -11,9 +11,9 @@ journal_metadata = Metadata('3004-9261', start=1, nr_results=2, refresh=True)
 book_metadata = Metadata('978-1-0716-1418-1', start=1, nr_results=3, refresh=30)
 single_article_metadata = DocumentMetadata('10.1007/s10660-023-09761-x', refresh=30)
 meta_pagination = Metadata('2662-9984', nr_results=30, refresh=30)
-
 with pytest.warns(UserWarning):
     article_metadata = Metadata('10.1186/s43593-023-00053-3', refresh=30)
+
 
 def test_book():
     """Test the book metadata."""
@@ -149,3 +149,10 @@ def test_wrong_id_type():
         assert str(e) == 'Invalid identifier'
     else:
         raise AssertionError('ValueError not raised')
+
+
+def test_warning():
+    """Test the warning message and get the article metadata."""
+    w_message = r'Too many results requested\. 1 document\(s\) found but 10 requested\.'
+    with pytest.warns(UserWarning, match=w_message):
+        Metadata('10.1186/s43593-023-00053-3', refresh=30)

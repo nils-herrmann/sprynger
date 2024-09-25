@@ -11,10 +11,8 @@ init()
 book = OpenAccessBook("978-3-031-63500-7", start=1, nr_results=2, refresh=30)
 chapter = OpenAccessChapter("10.1007/978-3-031-61874-1_5", refresh=30)
 chapter_with_text = OpenAccessChapter("10.1007/978-3-031-24498-8_7", refresh=30)
-
 with pytest.warns(UserWarning):
-    book_pagination = OpenAccessBook('978-3-031-63498-7', nr_results=30, refresh=True)
-
+    book_pagination = OpenAccessBook('978-3-031-63498-7', nr_results=30, refresh=30)
 
 def test_book_meta():
     """Test the book meta data."""
@@ -78,3 +76,10 @@ def test_pagination():
     assert len(book_pagination) == 27
     dois = set([chapter.metadata.doi for chapter in book_pagination])
     assert len(dois) == 27
+
+
+def test_warning():
+    """Test warning message."""
+    w_message = r'Too many results requested\. 27 document\(s\) found but 30 requested\.'
+    with pytest.warns(UserWarning, match=w_message):
+        OpenAccessBook('978-3-031-63498-7', nr_results=30, refresh=30)
