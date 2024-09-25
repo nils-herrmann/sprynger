@@ -1,16 +1,38 @@
 """Utility functions for fetching data from the Springer API."""
 from typing import Literal
 
+from requests.adapters import HTTPAdapter
 from requests import Response, Session
+from urllib3.util.retry import Retry
 
-from sprynger.exceptions import APIError, AuthenticationError, InternalServerError, InvalidRequestError, RateLimitError, ResourceNotFoundError
+from sprynger.utils.startup import get_config
+
+from sprynger.exceptions import (
+    APIError,
+    AuthenticationError,
+    InternalServerError,
+    InvalidRequestError,
+    RateLimitError,
+    ResourceNotFoundError,
+)
 
 
-
-def create_session():
+def create_session(max_retries: int,
+                   backoff_factor: float) -> Session:
     """Create a session."""
     session = Session()
+    retries = Retry(
+        total=max_retries,
+        backoff_factor=backoff_factor,
+        backoff_max=60,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["GET"]
+    )
+    adapter = HTTPAdapter(max_retries=retries)
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
     return session
+
 
 def check_response(response: Response) -> None:
     """Check the response."""
@@ -32,11 +54,19 @@ def check_response(response: Response) -> None:
 
 def fetch_data(url: str, params: dict) -> Response:
     """Fetch data from the Springer API."""
-    session = create_session()
-    response = session.get(url, params=params)
+    # Get the configuration
+    config = get_config()
+    max_retries = config.getint('Requests', 'Retries', fallback=5)
+    backoff_factor = config.getfloat('Requests', 'BackoffFactor', fallback=2.0)
+    timeout = config.getint('Requests', 'Timeout', fallback=20)
+
+    # Create session and retrieve data
+    session = create_session(max_retries, backoff_factor)
+    response = session.get(url, params=params, timeout=timeout)
     check_response(response)
 
     return response
+
 
 def detect_id_type(id: str) -> Literal['doi', 'issn', 'isbn']:
     """Detect the type of identifier."""
@@ -48,4 +78,3 @@ def detect_id_type(id: str) -> Literal['doi', 'issn', 'isbn']:
         return 'isbn'
     else:
         raise ValueError('Invalid identifier')
-

@@ -44,6 +44,7 @@ def create_config(config_dir: Optional[Path] = None,
     config.add_section('Requests')
     config.set('Requests', 'Timeout', '20')
     config.set('Requests', 'Retries', '5')
+    config.set('Requests', 'BackoffFactor', '2.0')
 
     # Write out
     config_dir.parent.mkdir(parents=True, exist_ok=True)
