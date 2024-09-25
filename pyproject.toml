@@ -30,4 +30,4 @@ Documentation = "https://sprynger.readthedocs.io/en/latest/"
 include = ["sprynger", "sprynger.*"]
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = ["pytest", "pytest-cov"]
