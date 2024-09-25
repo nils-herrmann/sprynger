@@ -16,6 +16,13 @@ Springer Nature currently offers three APIs:
 
 **Note:** sprynger currently supports the Metadata and OpenAccess API
 
+## 📦 Installation
+To install the `sprynger` package, you can use pip. Run the following command in your terminal:
+
+```bash
+pip install sprynger
+```
+
 ## 🪧 Example
 <div style="font-size: 12px;">
 
