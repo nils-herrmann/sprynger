@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sprynger"
-version = "0.0.0a5"
+version = "0.0.1"
 authors = [
   { name="Nils Herrmann", email="nils_herrmann@outlook.de" },
 ]
@@ -30,4 +30,5 @@ Documentation = "https://sprynger.readthedocs.io/en/latest/"
 include = ["sprynger", "sprynger.*"]
 
 [project.optional-dependencies]
+dev = ["pytest", "pytest-cov"]
 dev = ["pytest", "pytest-cov"]

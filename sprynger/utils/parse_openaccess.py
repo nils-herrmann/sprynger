@@ -1,33 +1,32 @@
 """Module with auxiliary functions to parse OpenAccess documents."""
-from sprynger.utils.data_structures import OpenAcessParagraph
+from sprynger.utils.data_structures import Paragraph
+from sprynger.utils.parse import get_text
 
-def get_paragraphs(xml_data) -> list[OpenAcessParagraph]:
+def get_paragraphs(xml) -> list[Paragraph]:
     """Paragraphs of the OpenAccess document.
 
     Returns:
-        list[OpenAcessParagraph]: A list of OpenAcessParagraph objects containing the 
+        list[Paragraph]: A list of Paragraph objects containing the 
         `paragraph_id`, `section_id`, `section_title`, and `text`.
     """
-    # Extract the paragraphs from the XML
-    section_paragraphs = []
-    sections = xml_data.findall('.//body//sec')
-    if len(sections) == 0:
-        sections = []
-
-    for section in sections:
-        section_id = section.get('id')
-        section_title = section.find('title').text if section.find('title') is not None else None
-
-        for paragraph in section.findall('p'):
+    if xml is not None:
+        parsed_paragraphs = []
+        for paragraph in xml.findall('.//p[@id]'):
             paragraph_id = paragraph.get('id')
             paragraph_text = ''.join(paragraph.itertext())
 
-            paragraph_data = OpenAcessParagraph(
+            parent = paragraph.getparent()
+            section_id = parent.get('id')
+            section_title = get_text(parent, 'title')
+
+
+            paragraph_data = Paragraph(
                 paragraph_id=paragraph_id,
                 section_id=section_id,
                 section_title=section_title,
                 text=paragraph_text.strip()
             )
-            section_paragraphs.append(paragraph_data)
+            parsed_paragraphs.append(paragraph_data)
 
-    return section_paragraphs
+        return parsed_paragraphs
+    return []

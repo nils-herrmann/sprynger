@@ -13,14 +13,18 @@ def init(config_dir: Union[str, Path] = CONFIG_FILE,
          keys: Optional[List[str]] = None) -> None:
     """
     Function to initialize the sprynger library. For more information go to the
-    [documentation]((https://sprynger.readthedocs.io/en/stable/configuration.html).
+    `documentation <file:///Users/nilsherrmann/sprynger/docs/build/html/initialization.html#configuration>`_.
     
-    Parameters
-    ----------
-    config_dir : str
-        Path to the configuration file
-    keys : lst
-        List of API keys
+    Args:
+        config_dir (str): Path to the configuration file
+        keys (list): List of API keys
+    
+    Raises:
+        FileNotFoundError: If the configuration file is not found.
+    
+    Example:
+        >>> from sprynger import init
+        >>> init(config_dir='path/to/custom/config.cfg', keys=['key1', 'key2'])
     """
     global CONFIG
     global CUSTOM_KEYS

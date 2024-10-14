@@ -40,67 +40,86 @@ Springer Nature currently offers three APIs:
 
 **Note:** sprynger currently supports the Metadata and OpenAccess API
 
+⬇️ Install
+-----------
+Download and install the package from PyPI:
 
-🪧 Example
-----------
+.. code-block:: bash
 
-Import the classes and initialize the library:
+    pip install sprynger
+
+
+🪧 Example Use
+---------------
+
+Metadata
+^^^^^^^^^^^^
 
 .. code-block:: python
 
-    from sprynger import DocumentMetadata, Metadata, init
-    
+    from sprynger import Metadata, init
+
     init()
 
-Retrieve metadata
+    book_metadata = Metadata(isbn='978-3-031-63497-0', nr_results=3)
+    for chapter in book_metadata:
+        print(chapter.identifier)
+        print(chapter.abstract)
+
+.. code-block:: text
+
+    doi:10.1007/978-3-031-63498-7_20
+        Modern solvers for quantified Boolean formulas (QBFs) process formulas in prenex form, ...
+    
+    doi:10.1007/978-3-031-63498-7_9
+        Given a finite consistent set of ground literals, we present an algorithm that generates ...
+
+    doi:10.1007/978-3-031-63498-7_3
+        The TPTP World is a well established infrastructure that supports research, development, ...
 
 .. code-block:: python
 
-    article = DocumentMetadata('10.1007/s10660-023-09761-x')
-    article.metadata
+    book_metadata.facets
 
-> MetadataRecord(contentType='Article', identifier='doi:10.1007/s10660-023-09761-x', language='en', ...)
+.. code-block:: text
 
-
-.. code-block:: python
-
-    book_metadata = Metadata('978-3-030-43582-0')
-    for record in book_metadata:
-        print(record)
-
-> MetadataRecord(contentType='Chapter', title='Explanations of Machine Learning', abstract='There is an unavoidable tension...',...  
-> MetadataRecord(contentType='Chapter', title='From Holmes to AlphaGo', abstract='Holmes’s enduring interest was in the...',...  
-> ...
+    [MetadataFacets(facet='subject', value='Artificial Intelligence', count='27'),...]
 
 OpenAccess
+^^^^^^^^^^^^
 
 .. code-block:: python
 
-    from sprynger import OpenAccessArticle, OpenAccessChapter, OpenAccessJournal, OpenAccessBook
+    from sprynger import OpenAccess
 
-    article = OpenAccessArticle('10.1007/s10288-023-00561-5')
-    article.paragraphs[0]
+    results = OpenAccess('"quantum computing"',
+                     dateto='2022-12-30',
+                     type='Journal Article',
+                     nr_results=3)
 
-> OpenAcessParagraph(paragraph_id='Par2', ..., text='Continuing the first part of this paper, in which we provided a brief survey of the state of the art in multiple criteria decision aiding (MCDA)...')
+    results.documents_found
 
-.. code-block:: python
 
-    journal = OpenAccessJournal('2198-6053')
-    for article in journal:
-        print(article.metadata)
+.. code-block:: text
 
-> ArticleMeta(article_type='correction', language='en', publisher_id='s40747-0...  
-> ArticleMeta(article_type='research-article', language='en', publisher_id='s40...  
-> ...
+    4350
 
 .. code-block:: python
 
-    book = OpenAccessBook("978-3-031-63500-7", start=1, max_results=2, refresh=30)
-    for chapter in book:
-        print(chapter.metadata)
+    for document in results:
+        print(document.title)
+        print(document.paragraphs[0].text)
 
-> ChapterMeta(doi='10.1007/978-3-031-63501-4_13', chapter='13')  
-> ChapterMeta(doi='10.1007/978-3-031-63501-4_18', chapter='18')
+.. code-block:: text
+
+    A neural network assisted 
+        A versatile magnetometer must deliver a readable response when exposed to target fields ...
+
+    Experimental demonstration of classical analogous time-dependent superposition of states
+        One of the quantum theory concepts on which quantum information processing stands is superposition ...
+
+    A quantum-like cognitive approach to modeling human biased selection behavior
+        Cognitive biases of the human mind significantly influence the human decision-making process ...
 
 🚀 Initialization
 -----------------
@@ -118,8 +137,7 @@ OpenAccess
     :maxdepth: 1
 
     classes/Metadata.rst
-    classes/OpenAccessJournal.rst
-    classes/OpenAccessBook.rst
+    classes/OpenAccess.rst
 
 
 

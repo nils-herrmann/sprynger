@@ -16,64 +16,80 @@ Springer Nature currently offers three APIs:
 
 **Note:** sprynger currently supports the Metadata and OpenAccess API
 
-## 📦 Installation
-To install the `sprynger` package, you can use pip. Run the following command in your terminal:
+## ⬇️ Install
 
+Download and install the package from PyPI:
 ```bash
 pip install sprynger
 ```
 
-## 🪧 Example
+## 🪧 Example Use
 <div style="font-size: 12px;">
 
 ### Metadata
-```py
-from sprynger import DocumentMetadata, Metadata, init
-init()
-```
-```py
-article = DocumentMetadata('10.1007/s10660-023-09761-x')
-article.metadata
-```
-> MetadataRecord(contentType='Article', identifier='doi:10.1007/s10660-023-09761-x', language='en', ...)
 
-```py
-book_metadata = Metadata('978-3-030-43582-0')
-for record in book_metadata:
-    print(record)
+```python
+from sprynger import Metadata, init
+
+init()
+
+book_metadata = Metadata(isbn='978-3-031-63497-0', nr_results=3)
+for chapter in book_metadata:
+    print(chapter.identifier)
+    print(chapter.abstract)
 ```
-> MetadataRecord(contentType='Chapter', title='Explanations of Machine Learning', abstract='There is an unavoidable tension...',...  
-> MetadataRecord(contentType='Chapter', title='From Holmes to AlphaGo', abstract='Holmes’s enduring interest was in the...',...  
-> ...
+>doi:10.1007/978-3-031-63498-7_20
+>> Modern solvers for quantified Boolean formulas (QBFs) process formulas in prenex form, ...
+
+>doi:10.1007/978-3-031-63498-7_9
+>>Given a finite consistent set of ground literals, we present an algorithm that generates ...
+
+>doi:10.1007/978-3-031-63498-7_3
+>> The TPTP World is a well established infrastructure that supports research, development, ...
+
+
+
+```python
+book_metadata.facets
+```
+>[MetadataFacets(facet='subject', value='Artificial Intelligence', count='27'),...]
 
 
 ### OpenAccess
-```py
-from sprynger import OpenAccessArticle, OpenAccessChapter, OpenAccessJournal, OpenAccessBook
 
-article = OpenAccessArticle('10.1007/s10288-023-00561-5')
-article.paragraphs[0]
+```python
+from sprynger import OpenAccess
 ```
-> OpenAcessParagraph(paragraph_id='Par2', ..., text='Continuing the first part of this paper, in which we provided a brief survey of the state of the art in multiple criteria decision aiding (MCDA)...')
 
-```py
-journal = OpenAccessJournal('2198-6053')
-for article in journal:
-    print(article.metadata)
+
+```python
+results = OpenAccess('"quantum computing"',
+                     dateto='2022-12-30',
+                     type='Journal Article',
+                     nr_results=3)
 ```
-> ArticleMeta(article_type='correction', language='en', publisher_id='s40747-0...  
-> ArticleMeta(article_type='research-article', language='en', publisher_id='s40...  
-> ...
 
-```py
-book = OpenAccessBook("978-3-031-63500-7", start=1, max_results=2, refresh=30)
-for chapter in book:
-    print(chapter.metadata)
+
+```python
+results.documents_found
 ```
-> ChapterMeta(doi='10.1007/978-3-031-63501-4_13', chapter='13')  
-> ChapterMeta(doi='10.1007/978-3-031-63501-4_18', chapter='18')
+> 4350
 
-</div>
+```python
+for document in results:
+    print(document.title)
+    print(document.paragraphs[0].text)
+```
+> A neural network assisted 
+>> A versatile magnetometer must deliver a readable response when exposed to target fields ...
+
+> Experimental demonstration of classical analogous time-dependent superposition of states
+>> One of the quantum theory concepts on which quantum information processing stands is superposition ...
+
+> A quantum-like cognitive approach to modeling human biased selection behavior
+>> Cognitive biases of the human mind significantly influence the human decision-making process ...
+
+<div>
 
 ## 📖 Documentation
 For a comprehensive guide, see the documentation in [read the docs](https://sprynger.readthedocs.io/en/latest/index.html).

@@ -5,13 +5,14 @@ from typing import Optional
 from lxml.etree import _Element
 
 
-def get_attr(node: _Element,
+def get_attr(node: Optional[_Element],
              tag: str,
              attr: str,
              value: str) -> Optional[str]:
     """Get the attribute of a tag in an XML node."""
-    if node.find(f'.//{tag}[@{attr}="{value}"]') is not None:
-        return node.find(f'.//{tag}[@{attr}="{value}"]').text
+    if node is not None:
+        if node.find(f'.//{tag}[@{attr}="{value}"]') is not None:
+            return node.find(f'.//{tag}[@{attr}="{value}"]').text
     return None
 
 

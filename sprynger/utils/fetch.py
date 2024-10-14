@@ -1,6 +1,4 @@
 """Utility functions for fetching data from the Springer API."""
-from typing import Literal
-
 from requests.adapters import HTTPAdapter
 from requests import Response, Session
 from urllib3.util.retry import Retry
@@ -10,9 +8,7 @@ from sprynger.utils.startup import get_config
 from sprynger.exceptions import (
     APIError,
     AuthenticationError,
-    InternalServerError,
     InvalidRequestError,
-    RateLimitError,
     ResourceNotFoundError,
 )
 
@@ -21,8 +17,7 @@ def create_session(max_retries: int,
                    backoff_factor: float) -> Session:
     """Create a session."""
     session = Session()
-    retries = Retry(
-        total=max_retries,
+    retries = Retry(total=max_retries,
         backoff_factor=backoff_factor,
         backoff_max=60,
         status_forcelist=[429, 500, 502, 503, 504],
@@ -44,10 +39,6 @@ def check_response(response: Response) -> None:
             raise AuthenticationError(response.status_code)
         elif response.status_code == 404:
             raise ResourceNotFoundError(response.status_code)
-        elif response.status_code == 429:
-            raise RateLimitError(response.status_code)
-        elif response.status_code == 500:
-            raise InternalServerError(response.status_code)
         else:
             raise APIError(response.status_code, "Unhandled error occurred")
 
@@ -66,15 +57,3 @@ def fetch_data(url: str, params: dict) -> Response:
     check_response(response)
 
     return response
-
-
-def detect_id_type(id: str) -> Literal['doi', 'issn', 'isbn']:
-    """Detect the type of identifier."""
-    if id.startswith('10.'):
-        return 'doi'
-    elif len(id) == 9:
-        return 'issn'
-    elif len(id) in [14, 17]:
-        return 'isbn'
-    else:
-        raise ValueError('Invalid identifier')

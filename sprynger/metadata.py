@@ -1,12 +1,9 @@
-"""There are two classes in this module:
-
-- **DocumentMetadata:** Retrieve the metadata of a *single* document from the Springer Metadata API.
-- **Metadata:** Retrieve the metadata of a documents associated with a journal or book from the Springer Metadata API.
 """
-from typing import Literal, Optional, Union
+Module with Metadata class.
+"""
+from typing import Union
 
 from sprynger.retrieve import Retrieve
-from sprynger.utils.fetch import detect_id_type
 from sprynger.utils.data_structures import MetadataCreator, MetadataFacets, MetadataRecord, MetadataResult
 from sprynger.utils.parse import make_int_if_possible, str_to_bool
 
@@ -104,55 +101,44 @@ class Metadata(Retrieve):
         return records_list
 
     def __init__(self,
-                 identifier: str,
-                 id_type: Optional[Literal['doi', 'issn', 'isbn']] = None,
+                 query: str = '',
                  start: int = 1,
                  nr_results: int = 10,
                  premium: bool = False,
                  cache: bool = True,
-                 refresh: Union[bool, int] = False):
+                 refresh: Union[bool, int] = False,
+                 **kwargs):
         """
         Args:
-            identifier (str): The identifier of the article (doi) 
-                or the journal (issn) or book (isbn).
-            id_type (Optional[Literal['doi', 'issn', 'isbn']]): The type of the identifier.
-                If not provided, it will be detected automatically.
+            query (str): The query to search for.
             start (int): The starting index for the results. Defaults to 1.
             nr_results (int): The number of results to retrieve. Defaults to 10.
             premium (bool): Whether the user has a premium account. Defaults to False.
             cache (bool): Whether to cache the results. Defaults to True.
             refresh (bool|int): Weather to refresh the cache. If an integer is provided, 
                 it will be used as the cache expiration time in days. Defaults to False.
+            kwargs: Additional fields for query.
 
         This class is iterable, allowing you to iterate over the metadata `records` retrieved.
         It also supports indexing to access the metadata of specific documents.
 
         Example:
-            >>> metadata = Metadata('id-book-or-journal')
+            >>> metadata = Metadata('Segmentation', issn='1573-7497', datefrom='2024-01-01')
             >>> for record in metadata:
             >>>     print(record)
      
         Note:
             - All properties can be converted to a pandas DataFrame with `pd.DataFrame(object.property)`.
-
         """
-
-        self._id = identifier
-        self._id_type = id_type
-        self._start = start
-        self._nr_results = nr_results
-
-        if self._id_type is None:
-            self._id_type = detect_id_type(self._id)
-
-        super().__init__(identifier=self._id,
-                         id_type=self._id_type,
+        super().__init__(query=query,
                          api='Metadata',
-                         start=self._start,
-                         nr_results=self._nr_results,
+                         start=start,
+                         nr_results=nr_results,
                          premium=premium,
                          cache=cache,
-                         refresh=refresh)
+                         refresh=refresh,
+                         **kwargs)
+        self._nr_results = nr_results
         self._records = self.records
 
     def __iter__(self):
@@ -164,41 +150,5 @@ class Metadata(Retrieve):
     def __len__(self):
         return len(self._records)
 
-
-class DocumentMetadata(Metadata):
-    """Class to retrieve the metadata of a *single* document from the Springer Metadata API."""
-    @property
-    def metadata(self) -> MetadataRecord:
-        """The metadata of a document.
-
-        Returns:
-            MetadataRecord: A MetadataRecord object containing the metadata of the document.
-            This object contains the following items: `contentType`, 
-            `identifier`, `language`, `url`, `url_format`, `url_platform`, `title`, `creators`, 
-            `publicationName`, `openaccess`, `doi`, `publisher`, `publicationDate`,
-            `publicationType`, `issn`, `volume`, `number`, `genre`, `startingPage`, 
-            `endingPage`, `journalId`, `copyright`, `abstract` and `subjects`.
-        """
-        return self.records[0]
-
-    def __init__(self,
-                 doi: str,
-                 cache: bool = True,
-                 refresh: Union[bool, int] = False):
-        """Retrieve a **single** document metadata from the Springer Metadata API.
-
-        Args:
-            doi (str): The DOI of the document.
-            cache (bool): Whether to cache the results. Defaults to True.
-            refresh (bool|int): Weather to refresh the cache. If an integer is provided, 
-                it will be used as the cache expiration time in days. Defaults to False.
-        Note:
-            To retrieve the metadata of all the documents in a book or journal, use the Metadata class.
-        """
-
-        super().__init__(identifier=doi,
-                       id_type='doi',
-                       start=1,
-                       nr_results=1,
-                       cache=cache,
-                       refresh=refresh)
+    def __repr__(self):
+        return self._records.__repr__()
