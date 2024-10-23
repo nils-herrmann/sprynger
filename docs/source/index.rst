@@ -38,7 +38,6 @@ Springer Nature currently offers three APIs:
 - **Springer Meta API:** Advanced version offering versioned metadata.
 - **Springer OpenAccess API:** Metadata and, where available, full-text
 
-**Note:** sprynger currently supports the Metadata and OpenAccess API
 
 ⬇️ Install
 -----------
@@ -137,6 +136,7 @@ OpenAccess
     :maxdepth: 1
 
     classes/Metadata.rst
+    classes/Meta.rst
     classes/OpenAccess.rst
 
 

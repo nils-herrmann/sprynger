@@ -121,10 +121,10 @@ class Base:
 
     def _get_total_results(self):
         """Get the total number of results for the query."""
-        if self._api == 'Metadata':
+        if (self._api == 'Metadata') or (self._api == 'Meta'):
             res_json = _to_json(self._res)
             total = res_json['result'][0]['total']
-        elif self._api in ['OpenAccess', 'OpenAccessJournal', 'OpenAccessBook']:
+        elif self._api in ['OpenAccess']:
             res_xml = _to_xml(self._res)
             total = res_xml.find('./result/total').text
         else:

@@ -14,8 +14,6 @@ Springer Nature currently offers three APIs:
 - **Springer Meta API:** Advanced version offering versioned metadata.
 - **Springer OpenAccess API:** Metadata and, where available, full-text
 
-**Note:** sprynger currently supports the Metadata and OpenAccess API
-
 ## ⬇️ Install
 
 Download and install the package from PyPI:

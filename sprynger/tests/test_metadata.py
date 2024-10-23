@@ -1,6 +1,4 @@
-"""Tests for the metadata module."""
-import pytest
-
+"""Tests for the Meta class."""
 from sprynger import init
 from sprynger import Metadata
 from sprynger.utils.data_structures import (MetadataCreator,

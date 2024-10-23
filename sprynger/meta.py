@@ -1,83 +1,58 @@
 """
-Module with Metadata class.
+Module with Meta class.
 """
 from typing import Union
 
-from sprynger.retrieve import Retrieve
-from sprynger.utils.data_structures import MetadataCreator, MetadataFacets, MetadataRecord, MetadataResult
+from sprynger.metadata import Metadata
+from sprynger.utils.data_structures import MetadataCreator, MetaDiscipline, MetaRecord, MetaURL
 from sprynger.utils.parse import make_int_if_possible, str_to_bool
 
 
-class Metadata(Retrieve):
-    """Class to retreive the metadata of a document from the Springer Metadata API."""
+class Meta(Metadata):
+    """Class to retreive the metadata of a document from the Springer Meta v2 API."""
     @property
-    def facets(self) -> list[MetadataFacets]:
-        """Faceted information about the results.
-
-        Returns:
-            list[MetadataFacets]: A list of MetadataFacets objects containing the 
-            `facet`, `value`, and `count`.
-        """
-        facets_list = []
-        factets = self.json.get('facets', [])
-        for facet in factets:
-            facet_name = facet.get('name')
-            for item in facet.get('values', []):
-                new_facet = MetadataFacets(facet=facet_name,
-                                           value=item.get('value'),
-                                           count=item.get('count'))
-                facets_list.append(new_facet)
-        return facets_list
-
-    @property
-    def results(self) -> MetadataResult:
-        """Overview of the results of the query.
-
-        Returns:
-            MetadataResult: An object containing the the `total` matches found, `start` 
-            index of the first result, max `pageLength` when paginating and the number of 
-            `recordsRetrieved`.
-        """
-        res = self.json.get('result', [{}])[0]
-        total_results = int(res.get('total', 0))
-        nr_results = min(self._nr_results, total_results)
-        out = MetadataResult(total=total_results,
-                             start=int(res.get('start', 0)),
-                             pageLength=int(res.get('pageLength', 0)),
-                             recordsRetrieved=nr_results)
-        return out
-
-    @property
-    def records(self) -> list[MetadataRecord]:
+    def records(self) -> list[MetaRecord]:
         """Contains the individual records that matched the query.
 
         Returns:
             list[MetadataRecord]: List of MetadataRecord objects which contain the following
-            items of a document: `contentType`, 
-            `identifier`, `language`, `url`, `url_format`, `url_platform`, `title`, `creators`, 
+            items of a document: `contentType`,
+            `identifier`, `language`, `urls`, `title`, `creators`,
             `publicationName`, `openaccess`, `doi`, `publisher`, `publicationDate`,
-            `publicationType`, `issn`, `volume`, `number`, `genre`, `startingPage`, 
-            `endingPage`, `journalId`, `copyright`, `abstract` and `subjects`.
+            `publicationType`, `issn`, `eIssn`, `volume`, `number`, `issueType`,
+            `topicalCollection`, `genre`, `startingPage`,
+            `endingPage`, `journalId`, `onlineDate`,
+            `copyright`, `abstract`, `conferenceInfo`, 
+            `keyword`, `subjects` and `disciplines`.
         """
         records_list = []
         for record in self.json.get('records', []):
-            url = record.get('url', {})[0].get('value')
-            url_format = record.get('url', {})[0].get('format')
-            url_platform = record.get('url', {})[0].get('platform')
-
+            # Parse the URLs
+            url_list = []
+            for url in record.get('url', []):
+                url_format = url.get('format')
+                platform = url.get('platform')
+                value = url.get('value')
+                url_list.append(MetaURL(format=url_format, platform=platform, value=value))
+            # Parse the creators
             creators = []
             for ceator in record.get('creators', []):
                 creators.append(MetadataCreator(creator=ceator.get('creator'),
-                                                ORCID=ceator.get('ORCID')))
+                                            ORCID=ceator.get('ORCID')))
+            # Parse the disciplines
+            disciplines = []
+            for discipline in record.get('disciplines', []):
+                disciplines.append(
+                    MetaDiscipline(id=discipline.get('id'),
+                                   term=discipline.get('term'))
+                                   )
 
             records_list.append(
-                MetadataRecord(
+                MetaRecord(
                     contentType=record.get('contentType'),
                     identifier=record.get('identifier'),
                     language=record.get('language'),
-                    url=url,
-                    url_format=url_format,
-                    url_platform=url_platform,
+                    urls=url_list,
                     title=record.get('title'),
                     creators=creators,
                     publicationName=record.get('publicationName'),
@@ -87,15 +62,22 @@ class Metadata(Retrieve):
                     publicationDate=record.get('publicationDate'),
                     publicationType=record.get('publicationType'),
                     issn=record.get('issn'),
+                    eIssn=record.get('eIssn'),
                     volume=make_int_if_possible(record.get('volume')),
                     number=make_int_if_possible(record.get('number')),
+                    issueType=record.get('issueType'),
+                    topicalCollection=record.get('topicalCollection'),
                     genre=record.get('genre'),
                     startingPage=make_int_if_possible(record.get('startingPage')),
                     endingPage=make_int_if_possible(record.get('endingPage')),
                     journalId=make_int_if_possible(record.get('journalId')),
+                    onlineDate=record.get('onlineDate'),
                     copyright=record.get('copyright'),
                     abstract=record.get('abstract'),
-                    subjects=record.get('subjects')
+                    conferenceInfo = record.get('conferenceInfo'),
+                    keyword = record.get('keyword'),
+                    subjects=record.get('subjects'),
+                    disciplines=disciplines
                 )
             )
         return records_list
@@ -130,9 +112,7 @@ class Metadata(Retrieve):
         Note:
             - All properties can be converted to a pandas DataFrame with `pd.DataFrame(object.property)`.
         """
-        api = self.__class__.__name__
         super().__init__(query=query,
-                         api=api,
                          start=start,
                          nr_results=nr_results,
                          premium=premium,
@@ -141,15 +121,3 @@ class Metadata(Retrieve):
                          **kwargs)
         self._nr_results = nr_results
         self._records = self.records
-
-    def __iter__(self):
-        return iter(self._records)
-
-    def __getitem__(self, index):
-        return self._records[index]
-
-    def __len__(self):
-        return len(self._records)
-
-    def __repr__(self):
-        return self._records.__repr__()

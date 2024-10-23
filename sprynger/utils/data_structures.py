@@ -44,3 +44,26 @@ Affiliation = create_namedtuple('Affiliation', fields_oa_aff)
 fields_date = ['year', 'month', 'day']
 Date = create_namedtuple('Date', fields_date)
 
+#############################
+#         Meta             #
+#############################
+
+fields_meta_url = ['format', 'platform', 'value']
+MetaURL = create_namedtuple('MetaURL', fields_meta_url)
+
+fields_meta_discipline = ['id', 'term']
+MetaDiscipline = create_namedtuple('MetaDiscipline', fields_meta_discipline)
+
+fields_meta_record = [
+    'contentType', 'identifier', 'language',
+    'urls', 'title', 'creators',
+    'publicationName', 'openaccess', 'doi',
+    'publisher', 'publicationDate', 'publicationType',
+    'issn', 'eIssn', 'volume',
+    'number', 'issueType', 'topicalCollection',
+    'genre', 'startingPage', 'endingPage',
+    'journalId', 'onlineDate', 'copyright',
+    'abstract', 'conferenceInfo', 'keyword',
+    'subjects', 'disciplines'
+]
+MetaRecord = create_namedtuple('MetaRecord', fields_meta_record)
