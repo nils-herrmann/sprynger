@@ -105,7 +105,7 @@ class Meta(Metadata):
         It also supports indexing to access the metadata of specific documents.
 
         Example:
-            >>> metadata = Metadata('Segmentation', issn='1573-7497', datefrom='2024-01-01')
+            >>> meta = Meta('Segmentation', issn='1573-7497', datefrom='2024-01-01')
             >>> for record in metadata:
             >>>     print(record)
      
