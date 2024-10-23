@@ -1,9 +1,7 @@
 """Tests for the OpenAccess class."""
-import pytest
-
 from sprynger import init, OpenAccess
 from sprynger.openaccess import Article, Chapter
-from sprynger.utils.data_structures import Paragraph
+from sprynger.utils.data_structures import Affiliation, Contributor, Date, Paragraph
 
 init()
 
@@ -15,6 +13,47 @@ book_pagination = OpenAccess(isbn='978-3-031-63498-7', nr_results=30, refresh=30
 journal = OpenAccess(issn="2198-6053", start=4, nr_results=3, refresh=30)
 journal_pagination = OpenAccess('issn:2198-6584', nr_results=26, refresh=True)
 article = OpenAccess(doi="10.1007/s40747-024-01577-y", refresh=30)
+
+
+def test_article_affiliations():
+    """Test the affiliations of the article."""
+    expected = [
+        Affiliation(type=None, ref_nr='Aff1', ror='https://ror.org/04z7qrj66', grid='grid.412518.b', isni='0000 0001 0008 0619', division='College of Information Engineering', name='Shanghai Maritime University', city='Shanghai', country='China'),
+        Affiliation(type=None, ref_nr='Aff2', ror='https://ror.org/05k2j8e48', grid='grid.495244.a', isni='0000 0004 1761 5722', division='College of Artificial Intelligence', name='Jiangxi University of Technology', city='Jiangxi', country='China'),
+        Affiliation(type=None, ref_nr='Aff3', ror='https://ror.org/04z7qrj66', grid='grid.412518.b', isni='0000 0001 0008 0619', division='College of Merchant Marine', name='Shanghai Maritime University', city='Shanghai', country='China')
+        ]
+    for a in article:
+        assert a.affiliations == expected
+
+
+def test_article_contributors():
+    """Test the contributors of the article."""
+    expected = [
+        Contributor(type='author', nr='Au1', orcid='http://orcid.org/0000-0002-1606-3511', surname='Hu', given_name='Zhanhui', email=None, affiliations_ref_nr=['Aff1']),
+        Contributor(type='author', nr='Au2', orcid=None, surname='Liu', given_name='Guangzhong', email='gzhliu@shmtu.edu.cn', affiliations_ref_nr=['Aff1']),
+        Contributor(type='author', nr='Au3', orcid=None, surname='Li', given_name='Yanping', email=None, affiliations_ref_nr=['Aff2']),
+        Contributor(type='author', nr='Au4', orcid=None, surname='Zhuang', given_name='Siqing', email=None, affiliations_ref_nr=['Aff3'])
+        ]
+    for a in article:
+        assert a.contributors == expected
+
+
+def test_article_dates():
+    """Test the dates of the article."""
+    expected_date_accepted = Date(year=2024, month=7, day=21)
+    expected_date_epub = Date(year=2024, month=9, day=9)
+    expected_date_online = Date(year=2024, month=9, day=9)
+    expected_date_ppub = Date(year=None, month=None, day=None)
+    expected_date_received = Date(year=2024, month=4, day=12)
+    expected_date_registration = Date(year=2024, month=7, day=24)
+
+    for a in article:
+        assert a.date_accepted == expected_date_accepted
+        assert a.date_epub == expected_date_epub
+        assert a.date_online == expected_date_online
+        assert a.date_ppub == expected_date_ppub
+        assert a.date_received == expected_date_received
+        assert a.date_registration == expected_date_registration
 
 
 def test_article_meta():
@@ -41,6 +80,48 @@ def test_book_meta():
         assert chapter.isbn_electronic == "978-3-031-63501-4"
         assert chapter.publisher_name == "Springer Nature Switzerland"
         assert chapter.publisher_loc == "Cham"
+
+
+def test_chapter_affiliations():
+    """Test the affiliations of the chapter."""
+    expected_affiliations = [
+        Affiliation(type='book author', ref_nr='Aff1', ror='https://ror.org/00d7xrm67', grid='grid.410413.3', isni='0000 0001 2294 748X', division='Institute of Software Technology', name='Graz University of Technology', city='Graz', country='Austria'),
+        Affiliation(type='book author', ref_nr='Aff2', ror=None, grid='grid.426094.d', isni='0000 0004 0625 6437', division='Corporate Technology', name='Siemens (Austria)', city='Wien', country='Austria'),
+        Affiliation(type='book author', ref_nr='Aff3', ror='https://ror.org/03yxnpp24', grid='grid.9224.d', isni='0000 0001 2168 1229', division='ETS de Ingeniería Informática', name='University of Seville', city='Sevilla', country='Spain'),
+        Affiliation(type=None, ref_nr='Aff4', ror='https://ror.org/00d7xrm67', grid='grid.410413.3', isni='0000 0001 2294 748X', division='Institute of Software Technology', name='Graz University of Technology', city='Graz', country='Austria'),
+        Affiliation(type=None, ref_nr='Aff5', ror=None, grid='grid.426094.d', isni='0000 0004 0625 6437', division='Corporate Technology', name='Siemens (Austria)', city='Wien', country='Austria'),
+        Affiliation(type=None, ref_nr='Aff6', ror='https://ror.org/03yxnpp24', grid='grid.9224.d', isni='0000 0001 2168 1229', division='ETS de Ingeniería Informática', name='University of Seville', city='Sevilla', country='Spain')
+        ]
+    for one_chapter in chapter:
+        assert one_chapter.affiliations == expected_affiliations
+
+
+def test_chapter_contributors():
+    """Test the contributors of the chapter."""
+    expected_contributors = [
+        Contributor(type='author', nr=None, orcid=None, surname='Felfernig', given_name='Alexander', email='alexander.felfernig@ist.tugraz.at', affiliations_ref_nr=['Aff1']),
+        Contributor(type='author', nr=None, orcid=None, surname='Falkner', given_name='Andreas', email='andreas.a.falkner@siemens.com', affiliations_ref_nr=['Aff2']),
+        Contributor(type='author', nr=None, orcid=None, surname='Benavides', given_name='David', email='benavides@us.es', affiliations_ref_nr=['Aff3']),
+        Contributor(type='author', nr=None, orcid=None, surname='Felfernig', given_name='Alexander', email=None, affiliations_ref_nr=['Aff4']),
+        Contributor(type='author', nr=None, orcid=None, surname='Falkner', given_name='Andreas', email=None, affiliations_ref_nr=['Aff5']),
+        Contributor(type='author', nr=None, orcid=None, surname='Benavides', given_name='David', email=None, affiliations_ref_nr=['Aff6'])
+        ]
+    for one_chapter in chapter:
+        assert one_chapter.contributors == expected_contributors
+
+
+def test_chapter_dates():
+    """Test the dates of the chapter."""
+    expected_date_epub = Date(year=2024, month=6, day=30)
+    expected_date_online = Date(year=2024, month=6, day=30)
+    expected_date_ppub = Date(year=None, month=None, day=None)
+    expected_date_registration = Date(year=2024, month=5, day=27)
+
+    for one_chapter in chapter:
+        assert one_chapter.date_epub == expected_date_epub
+        assert one_chapter.date_online == expected_date_online
+        assert one_chapter.date_ppub == expected_date_ppub
+        assert one_chapter.date_registration == expected_date_registration
 
 
 def test_chapter_meta():

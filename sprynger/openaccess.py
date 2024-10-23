@@ -13,16 +13,86 @@ Example:
 from typing import Optional, Union
 
 from sprynger.retrieve import Retrieve
-from sprynger.utils.data_structures import Paragraph
+from sprynger.utils.data_structures import Affiliation, Contributor, Date, Paragraph
 from sprynger.utils.parse import get_attr, get_text, make_int_if_possible
-from sprynger.utils.parse_openaccess import get_paragraphs
+from sprynger.utils.parse_openaccess import (
+    affs_to_dict,
+    get_contributors,
+    get_affiliations,
+    get_date,
+    get_paragraphs,
+)
+
 
 class Article:
     """Auxiliary class to parse an article from a journal."""
     @property
+    def affiliations(self) -> list[Affiliation]:
+        """List of affiliations of the collaborators of the article. Each affiliation is represented
+        as a named tuple with the following fields:
+        `type`, `ref_nr`, `ror`, `grid`, `isni`, `division`, `name`, `city`, `country`.
+        
+        Note: To match affiliations with contributors use the affiliation's `ref_nr` and the
+        contributor's `affiliations_ref_nr`.
+        """
+        return get_affiliations(self._data)
+
+    @property
+    def affiliations_dict(self) -> dict[str, Affiliation]:
+        """Auxiliary property to query the affiliations by their reference number."""
+        return affs_to_dict(self.affiliations)
+
+    @property
     def article_type(self) -> Optional[str]:
         """Type of the article."""
         return self._data.get('article-type')
+
+    @property
+    def contributors(self) -> list[Contributor]:
+        """List of contributors of the article. Each contributor is represented as a named tuple
+        with the following fields:
+        `type`, `nr`, `orcid`, `surname`, `given_name`, `email`, `affiliations_ref_nr`.
+
+        Note: To match contributors with affiliations use the contributor's `affiliations_ref_nr`
+        and the affiliation's `ref_nr`.
+        """
+        return get_contributors(self._article_meta)
+
+    @property
+    def date_epub(self) -> Date:
+        """Electronic publication date of the article."""
+        date_node = self._article_meta.find('.//pub-date[@publication-format="electronic"]')
+        return get_date(date_node)
+
+    @property
+    def date_ppub(self) -> Date:
+        """Print publication date of the article."""
+        date_node = self._article_meta.find('.//pub-date[@publication-format="print"]')
+        return get_date(date_node)
+
+    @property
+    def date_registration(self) -> Date:
+        """Registration date of the article."""
+        date_node = self._article_meta.find('.//history/date[@date-type="registration"]')
+        return get_date(date_node)
+
+    @property
+    def date_received(self) -> Date:
+        """Date when article was recieved."""
+        date_node = self._article_meta.find('.//history/date[@date-type="received"]')
+        return get_date(date_node)
+
+    @property
+    def date_accepted(self) -> Date:
+        """Accepted date of the article."""
+        date_node = self._article_meta.find('.//history/date[@date-type="accepted"]')
+        return get_date(date_node)
+
+    @property
+    def date_online(self) -> Date:
+        """Online date of the article."""
+        date_node = self._article_meta.find('.//history/date[@date-type="online"]')
+        return get_date(date_node)
 
     @property
     def doi(self) -> Optional[str]:
@@ -108,9 +178,35 @@ class Article:
         return f'Article {self.doi}'
 
 
-
 class Chapter:
     """Auxiliary class to parse a chapter from a book."""
+    @property
+    def affiliations(self) -> list[Affiliation]:
+        """List of affiliations of the collaborators of the chapter. Each affiliation is represented
+        as a named tuple with the following fields:
+        `type`, `ref_nr`, `ror`, `grid`, `isni`, `division`, `name`, `city`, `country`.
+        
+        Note: To match affiliations with contributors use the affiliation's `ref_nr` and the
+        contributor's `affiliations_ref_nr`.
+        """
+        return get_affiliations(self._data)
+
+    @property
+    def affiliations_dict(self) -> dict[str, Affiliation]:
+        """Auxiliary property to query the affiliations by their reference number."""
+        return affs_to_dict(self.affiliations)
+
+    @property
+    def contributors(self) -> list[Contributor]:
+        """List of contributors of the chapter. Each contributor is represented as a named tuple
+        with the following fields:
+        `type`, `nr`, `orcid`, `surname`, `given_name`, `email`, `affiliations_ref_nr`.
+
+        Note: To match contributors with affiliations use the contributor's `affiliations_ref_nr`
+        and the affiliation's `ref_nr`.
+        """
+        return get_contributors(self._data)
+
     @property
     def book_doi(self) -> Optional[str]:
         """DOI of the book."""
@@ -141,6 +237,30 @@ class Chapter:
         """Book chapter name or number."""
         chapter_nr = get_attr(self._chapter_meta, 'book-part-id', 'book-part-id-type', 'chapter')
         return make_int_if_possible(chapter_nr)
+
+    @property
+    def date_epub(self) -> Date:
+        """Electronic publication date of the chapter."""
+        date_node = self._chapter_meta.find('.//pub-date[@publication-format="electronic"]')
+        return get_date(date_node)
+
+    @property
+    def date_ppub(self) -> Date:
+        """Print publication date of the chapter."""
+        date_node = self._chapter_meta.find('.//pub-date[@publication-format="print"]')
+        return get_date(date_node)
+
+    @property
+    def date_registration(self) -> Date:
+        """Registration date of the chapter."""
+        date_node = self._chapter_meta.find('.//pub-history/date[@date-type="registration"]')
+        return get_date(date_node)
+
+    @property
+    def date_online(self) -> Date:
+        """Online date of the chapter."""
+        date_node = self._chapter_meta.find('.//pub-history/date[@date-type="online"]')
+        return get_date(date_node)
 
     @property
     def doi(self) -> Optional[str]:

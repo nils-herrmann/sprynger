@@ -16,11 +16,12 @@ def get_attr(node: Optional[_Element],
     return None
 
 
-def get_text(node: _Element,
+def get_text(node: Optional[_Element],
              path: str) -> Optional[str]:
     """Get the text of an XML node."""
-    if node.find(path) is not None:
-        return node.find(path).text
+    if node is not None:
+        if node.find(path) is not None:
+            return node.find(path).text
     return None
 
 
