@@ -44,7 +44,7 @@ def test_factets():
     """Test the facets."""
     assert len(article_metadata.facets) == 11
 
-    expected = MetadataFacets(facet='subject', value='Physics', count='1')
+    expected = MetadataFacets(facet='subject', value='Physics', count=1)
     assert article_metadata.facets[1] == expected
 
 

@@ -120,24 +120,26 @@ OpenAccess
     A quantum-like cognitive approach to modeling human biased selection behavior
         Cognitive biases of the human mind significantly influence the human decision-making process ...
 
-🚀 Initialization
------------------
 
 .. toctree::
    :maxdepth: 1
+   :caption: 🚀 Initialization
    
-   initialization.rst
-
-
-📦 APIs
--------
+   initialization
 
 .. toctree::
     :maxdepth: 1
+    :caption: 📦 APIs
 
     classes/Metadata.rst
     classes/Meta.rst
     classes/OpenAccess.rst
+
+.. toctree::
+    :maxdepth: 1
+    :caption: 🔎 How to query ?
+
+    how_to_query
 
 
 

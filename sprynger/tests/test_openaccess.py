@@ -43,7 +43,7 @@ def test_article_dates():
     expected_date_accepted = Date(year=2024, month=7, day=21)
     expected_date_epub = Date(year=2024, month=9, day=9)
     expected_date_online = Date(year=2024, month=9, day=9)
-    expected_date_ppub = Date(year=None, month=None, day=None)
+    expected_date_ppub = Date(year=2024, month=12, day=None)
     expected_date_received = Date(year=2024, month=4, day=12)
     expected_date_registration = Date(year=2024, month=7, day=24)
 

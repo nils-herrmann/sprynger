@@ -15,7 +15,7 @@ class Meta(Metadata):
         """Contains the individual records that matched the query.
 
         Returns:
-            list[MetadataRecord]: List of MetadataRecord objects which contain the following
+            list[MetaRecord]: List of MetaRecord objects which contain the following
             items of a document: `contentType`,
             `identifier`, `language`, `urls`, `title`, `creators`,
             `publicationName`, `openaccess`, `doi`, `publisher`, `publicationDate`,
@@ -26,7 +26,7 @@ class Meta(Metadata):
             `keyword`, `subjects` and `disciplines`.
         """
         records_list = []
-        for record in self.json.get('records', []):
+        for record in self._json.get('records', []):
             # Parse the URLs
             url_list = []
             for url in record.get('url', []):
@@ -99,18 +99,24 @@ class Meta(Metadata):
             cache (bool): Whether to cache the results. Defaults to True.
             refresh (bool|int): Weather to refresh the cache. If an integer is provided, 
                 it will be used as the cache expiration time in days. Defaults to False.
-            kwargs: Additional fields for query.
+            kwargs: Additional fields for query (e.g. issn, datefrom, dateto, etc.). For a comprehensive list of
+                available fields, see the 
+                `Springer Metadata API documentation <https://docs-dev.springernature.com/docs/#querying-api/querying-api>`_.
 
         This class is iterable, allowing you to iterate over the metadata `records` retrieved.
         It also supports indexing to access the metadata of specific documents.
 
         Example:
+            Retrieve the metadata of documents that match the query 'Segmentation' with ISSN '1573-7497' and
+            starting from the date '2024-01-01'.
+            
             >>> meta = Meta('Segmentation', issn='1573-7497', datefrom='2024-01-01')
             >>> for record in metadata:
             >>>     print(record)
      
         Note:
-            - All properties can be converted to a pandas DataFrame with `pd.DataFrame(object.property)`.
+            The properties `facets`, `records` and `results` can be converted to a pandas
+            DataFrame with `pd.DataFrame(object.property)`.
         """
         super().__init__(query=query,
                          start=start,

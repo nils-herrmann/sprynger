@@ -11,7 +11,7 @@ from sprynger.utils.data_structures import (
 
 init()
 
-article = Meta(doi='10.1007/s00394-024-03496-7')
+article = Meta(doi='10.1007/s00394-024-03496-7', refresh=True)
 
 def test_results():
     """Test the results."""
@@ -83,5 +83,5 @@ def test_facets():
     """Test the facets."""
     assert len(article.facets) == 12
 
-    expected_first_facet = MetadataFacets(facet='subject', value='Chemistry', count='1')
+    expected_first_facet = MetadataFacets(facet='subject', value='Chemistry', count=1)
     assert article.facets[0] == expected_first_facet

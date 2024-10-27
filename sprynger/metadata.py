@@ -4,7 +4,10 @@ Module with Metadata class.
 from typing import Union
 
 from sprynger.retrieve import Retrieve
-from sprynger.utils.data_structures import MetadataCreator, MetadataFacets, MetadataRecord, MetadataResult
+from sprynger.utils.data_structures import (MetadataCreator,
+                                            MetadataFacets,
+                                            MetadataRecord,
+                                            MetadataResult)
 from sprynger.utils.parse import make_int_if_possible, str_to_bool
 
 
@@ -19,15 +22,20 @@ class Metadata(Retrieve):
             `facet`, `value`, and `count`.
         """
         facets_list = []
-        factets = self.json.get('facets', [])
+        factets = self._json.get('facets', [])
         for facet in factets:
             facet_name = facet.get('name')
             for item in facet.get('values', []):
                 new_facet = MetadataFacets(facet=facet_name,
                                            value=item.get('value'),
-                                           count=item.get('count'))
+                                           count=make_int_if_possible(item.get('count')))
                 facets_list.append(new_facet)
         return facets_list
+
+    @property
+    def json(self) -> dict:
+        """Raw JSON response from the Springer Metadata API."""
+        return self._json
 
     @property
     def results(self) -> MetadataResult:
@@ -38,7 +46,7 @@ class Metadata(Retrieve):
             index of the first result, max `pageLength` when paginating and the number of 
             `recordsRetrieved`.
         """
-        res = self.json.get('result', [{}])[0]
+        res = self._json.get('result', [{}])[0]
         total_results = int(res.get('total', 0))
         nr_results = min(self._nr_results, total_results)
         out = MetadataResult(total=total_results,
@@ -60,7 +68,7 @@ class Metadata(Retrieve):
             `endingPage`, `journalId`, `copyright`, `abstract` and `subjects`.
         """
         records_list = []
-        for record in self.json.get('records', []):
+        for record in self._json.get('records', []):
             url = record.get('url', {})[0].get('value')
             url_format = record.get('url', {})[0].get('format')
             url_platform = record.get('url', {})[0].get('platform')
@@ -117,18 +125,25 @@ class Metadata(Retrieve):
             cache (bool): Whether to cache the results. Defaults to True.
             refresh (bool|int): Weather to refresh the cache. If an integer is provided, 
                 it will be used as the cache expiration time in days. Defaults to False.
-            kwargs: Additional fields for query.
+            kwargs: Additional fields for query (e.g. issn, datefrom, dateto, etc.). For a comprehensive list of
+                available fields, see the 
+                `Springer Metadata API documentation <https://docs-dev.springernature.com/docs/#querying-api/querying-api>`_.
 
         This class is iterable, allowing you to iterate over the metadata `records` retrieved.
         It also supports indexing to access the metadata of specific documents.
 
         Example:
+            Retrieve the metadata of documents with the word 'Segmentation' from the journal
+            with the ISSN '1573-7497' starting from the date '2024-01-01'.
+            
+
             >>> metadata = Metadata('Segmentation', issn='1573-7497', datefrom='2024-01-01')
             >>> for record in metadata:
             >>>     print(record)
      
         Note:
-            - All properties can be converted to a pandas DataFrame with `pd.DataFrame(object.property)`.
+            The properties `facets`, `records` and `results` can be converted to a pandas 
+            DataFrame with `pd.DataFrame(object.property)`.
         """
         api = self.__class__.__name__
         super().__init__(query=query,

@@ -18,18 +18,14 @@ from sprynger.utils.startup import get_config, get_keys
 class Base:
     """Base class to retrieve data from the Springer API."""
     @property
-    def json(self) -> Optional[dict]:
+    def _json(self) -> dict:
         """JSON response from the API."""
-        if FORMAT[self._api] == 'json':
-            return _to_json(self._res)
-        return None
+        return _to_json(self._res)
 
     @property
-    def xml(self) -> Optional[etree._Element]:
+    def _xml(self) -> etree._Element:
         """XML response from the API."""
-        if FORMAT[self._api] == 'jats':
-            return _to_xml(self._res)
-        return None
+        return _to_xml(self._res)
 
     def __init__(self,
                  query: str,
