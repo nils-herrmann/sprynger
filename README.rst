@@ -52,7 +52,7 @@ Download and install the package from PyPI:
     >>> from sprynger import Meta, OpenAccess, init
     >>> init()
     >>>
-    >>> # Get metadata of all chapters the book with ISBN '978-3-031-63497-0'
+    >>> # Get metadata of all chapters in the book with ISBN '978-3-031-63497-0'
     >>> book_metadata = Metadata(isbn='978-3-031-63497-0', nr_results=3)
     >>> for chapter in book_metadata:
     >>>     print(chapter.identifier)
@@ -67,7 +67,7 @@ Download and install the package from PyPI:
     >>> book_metadata.facets
     [MetadataFacets(facet='subject', value='Artificial Intelligence', count='27'),...]
     >>> 
-    >>> # Get journal articles with the keyword 'quantum computing' published before 2023
+    >>> # Retrieve full-text of 'journal articles' with the keyword 'quantum computing' published before 2023
     >>> results = OpenAccess('"quantum computing"', dateto='2022-12-30', type='Journal Article', nr_results=3)
     >>> results.documents_found
     4350
