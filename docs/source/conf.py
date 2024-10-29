@@ -4,9 +4,9 @@ sys.path.insert(0, os.path.abspath('../../'))
 
 
 project = 'sprynger'
-copyright = '2024, Nils Herrmann'
-author = 'Nils Herrmann'
-release = '0.1'
+copyright = '2024, Nils A. Herrmann de Alba'
+author = 'Nils A. Herrmann de Alba'
+release = '0.1.1'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -17,6 +17,7 @@ extensions = [
     'sphinx.ext.napoleon',  # Optional: for Google and NumPy style docstrings
     'sphinx_copybutton'
 ]
+copybutton_prompt_text = ">>> "
 
 templates_path = ['_templates']
 exclude_patterns = []

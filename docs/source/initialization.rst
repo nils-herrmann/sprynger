@@ -3,11 +3,11 @@ Start-up
 
 You initalize `sprynger` as follows:
 
-.. code-block:: python
+.. code:: python
 
-    import sprynger
+    >>> import sprynger
 
-    sprynger.init()
+    >>> sprynger.init()
 
 This reads the configuration from the default locations. You may also specify a different configuration file and API keys:
 
@@ -25,7 +25,7 @@ This reads the configuration from the default locations. You may also specify a 
 
    **Example**:
 
-   .. code-block:: python
+   .. code:: python
 
       >>> from sprynger import init
       >>> init(config_dir='path/to/custom/config.cfg', keys=['key1', 'key2'])
