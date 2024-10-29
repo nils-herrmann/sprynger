@@ -97,4 +97,4 @@ If the package helped you, give it a star!
 --------------
 
 This project is an independent API wrapper for the Springer Nature API.
-It is not affiliated with, endorsed, or maintained by Springer Nature. For official support, please refer to the Springers's [documentation](http://docs-dev.springernature.com/docs/) and support channels.
+It is not affiliated with, endorsed, or maintained by Springer Nature. For official support, please refer to the Springers's `documentation <http://docs-dev.springernature.com/docs/>`_. and support channels.
