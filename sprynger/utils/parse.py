@@ -25,6 +25,17 @@ def get_text(node: Optional[_Element],
     return None
 
 
+def stringify_descendants(node: Optional[_Element]) -> Optional[str]:
+    """
+    Filters and removes possible Nones in texts and tails.
+    If descendants are present, it will return their text.
+    ref: http://stackoverflow.com/questions/4624062/get-all-text-inside-a-tag-in-lxml
+    """
+    if node is not None:
+        return "".join(node.itertext())
+    return None
+
+
 def make_int_if_possible(val):
     """Attempt a conversion to int type."""
     try:
