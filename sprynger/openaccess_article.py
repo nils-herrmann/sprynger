@@ -1,18 +1,25 @@
 """Module with the Article class for the OpenAccess class."""
 from typing import Optional
 
-from sprynger.utils.data_structures import Affiliation, Contributor, Date, Paragraph
+from sprynger.utils.data_structures import Affiliation, Contributor, Date, Paragraph, Reference
 from sprynger.utils.parse import get_attr, get_text
 from sprynger.utils.parse_openaccess import (
     affs_to_dict,
+    get_acknowledgements,
     get_contributors,
     get_affiliations,
     get_date,
     get_paragraphs,
+    get_reference_list
 )
 
 class Article:
     """Auxiliary class to parse an article from a journal."""
+    @property
+    def acknowledgements(self) -> Optional[str]:
+        """Acknowledgements of the article."""
+        return get_acknowledgements(self._article_back)
+
     @property
     def affiliations(self) -> list[Affiliation]:
         """List of affiliations of the collaborators of the article. Each affiliation is represented
@@ -150,6 +157,17 @@ class Article:
     def publisher_name(self) -> Optional[str]:
         """Name of the publisher."""
         return get_text(self._journal_meta, './/publisher-name')
+    
+    @property
+    def references(self) -> list[Reference]:
+        """References of the article.
+        
+        Returns:
+            list[Reference]: A list of Reference objects containing the
+            `ref_list_id`, `ref_list_title`, `ref_id`, `ref_label`, `ref_publication_type`,
+            `authors`, `editors`, `names`, `ref_title`, `ref_source`, `ref_year`, `ref_doi`.
+        """
+        return get_reference_list(self._article_back)
 
     @property
     def title(self) -> Optional[str]:
@@ -160,6 +178,7 @@ class Article:
         self._data = data
         self._journal_meta = data.find('.//front/journal-meta')
         self._article_meta = data.find('.//front/article-meta')
+        self._article_back = data.find('.//back')
 
     def __repr__(self) -> str:
         return f'Article {self.doi}'

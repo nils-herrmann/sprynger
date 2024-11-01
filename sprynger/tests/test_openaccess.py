@@ -1,13 +1,14 @@
 """Tests for the OpenAccess class."""
 from sprynger import init, OpenAccess
 from sprynger.openaccess import Article, Chapter
-from sprynger.utils.data_structures import Affiliation, Contributor, Date, Paragraph
+from sprynger.utils.data_structures import Affiliation, Contributor, Date, Paragraph, Reference
 
 init()
 
 book = OpenAccess(isbn="978-3-031-63500-7", start=1, nr_results=2, refresh=30)
 chapter = OpenAccess("doi:10.1007/978-3-031-61874-1_5", refresh=30)
 chapter_with_text = OpenAccess(doi="10.1007/978-3-031-24498-8_7", refresh=30)
+chapter_for_references = OpenAccess(doi='10.1007/978-3-031-63498-7_20')
 book_pagination = OpenAccess(isbn='978-3-031-63498-7', nr_results=30, refresh=30)
 
 journal = OpenAccess(issn="2198-6053", start=4, nr_results=3, refresh=30)
@@ -59,6 +60,7 @@ def test_article_dates():
 def test_article_meta():
     """Test the article meta-data."""
     for a in article:
+        assert a.acknowledgements == 'We would like to express our gratitude and thank all the stakeholders: Professor Guangzhong Liu, Zhanhui Hu, Siqing Zhuang (Shanghai Maritime University), Yanping Li (Jiangxi University of Technology).'
         assert a.article_type == 'research-article'
         assert a.language == 'en'
         assert a.publisher_id == 's40747-024-01577-y'
@@ -66,6 +68,39 @@ def test_article_meta():
         assert a.doi == '10.1007/s40747-024-01577-y'
         assert a.title == 'SAGB: self-attention with gate and BiGRU network for intrusion detection'
 
+def test_article_references():
+    """Test the references of the article."""
+    expected_ref_last = Reference(
+        ref_list_id="Bib1",
+        ref_list_title="References",
+        ref_id="CR42",
+        ref_label="42.",
+        ref_publication_type="journal",
+        authors=["P Mishra", "V Varadharajan", "U Tupakula", "ES Pilli"],
+        editors=[],
+        names=[],
+        ref_title="A detailed investigation and analysis of using machine learning techniques for intrusion detection",
+        ref_source="IEEE Commun Surv Tutor",
+        ref_year="2018",
+        ref_doi="10.1109/comst.2018.2847722",
+    )
+
+    expected_ref_14 = Reference(
+        ref_list_id="Bib1",
+        ref_list_title="References",
+        ref_id="CR15",
+        ref_label="15.",
+        ref_publication_type="other",
+        authors=[],
+        editors=[],
+        names=[],
+        ref_title="Rashid A, Siddique MJ, Ahmed SM (2020) Machine and deep learning based comparative analysis using hybrid approaches for intrusion detection system",
+        ref_source=None,
+        ref_year=None,
+        ref_doi=None,
+    )
+    assert article[0].references[-1] == expected_ref_last
+    assert article[0].references[14] == expected_ref_14
 
 def test_book_meta():
     """Test the book meta data."""
@@ -127,11 +162,48 @@ def test_chapter_dates():
 def test_chapter_meta():
     """Test the chapter meta data."""
     for one_chapter in chapter:
+        assert one_chapter.acknowledgements is None
         assert one_chapter.doi == '10.1007/978-3-031-61874-1_5'
         assert one_chapter.chapter_nr == 5
         assert one_chapter.title == 'Tools and Applications'
 
     assert isinstance(book[0], Chapter)
+
+def test_chapter_references():
+    """Test the references of the chapter."""
+    expected_ref_1 = Reference(
+        ref_list_id='Bib1',
+        ref_list_title='References',
+        ref_id='CR1',
+        ref_label='1.',
+        ref_publication_type='other',
+        authors=[],
+        editors=[],
+        names=[],
+        ref_title='Beyersdorff, O., Hinde, L., Pich, J.: Reasons for hardness in QBF proof systems. ACM Trans. Comput. Theory 12(2), 10:1–10:27 (2020). https://doi.org/10.1145/3378665',
+        ref_source=None,
+        ref_year=None,
+        ref_doi='10.1145/3378665',
+    )
+    expected_ref_2 = Reference(
+        ref_list_id='Bib1',
+        ref_list_title='References',
+        ref_id='CR3',
+        ref_label='3.',
+        ref_publication_type='confproc',
+        authors=['A Biere', 'F Lonsing', 'M Seidl'],
+        editors=['N Bjørner', 'V Sofronie-Stokkermans'],
+        names=[],
+        ref_title='Blocked clause elimination for QBF',
+        ref_source='Automated Deduction – CADE-23',
+        ref_year='2011',
+        ref_doi='10.1007/978-3-642-22438-6_10',
+    )
+    for one_chapter in chapter_for_references:
+        assert one_chapter.references[0] == expected_ref_1
+        assert one_chapter.references[2] == expected_ref_2
+    
+    assert chapter[0].references == []
 
 
 def test_iterable():

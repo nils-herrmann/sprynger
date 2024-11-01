@@ -44,6 +44,13 @@ Affiliation = create_namedtuple('Affiliation', fields_oa_aff)
 fields_date = ['year', 'month', 'day']
 Date = create_namedtuple('Date', fields_date)
 
+fields_oa_reference = ['ref_list_id', 'ref_list_title', 'ref_id',
+                       'ref_label', 'ref_publication_type', 'authors',
+                       'editors', 'names',
+                       'ref_title', 'ref_source', 'ref_year', 'ref_doi']
+Reference = create_namedtuple('Reference', fields_oa_reference)
+
+
 #############################
 #         Meta             #
 #############################

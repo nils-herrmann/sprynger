@@ -1,18 +1,25 @@
 """Module with the chapter class for the OpenAccess class."""
 from typing import Optional, Union
 
-from sprynger.utils.data_structures import Affiliation, Contributor, Date, Paragraph
+from sprynger.utils.data_structures import Affiliation, Contributor, Date, Paragraph, Reference
 from sprynger.utils.parse import get_attr, get_text, make_int_if_possible
 from sprynger.utils.parse_openaccess import (
     affs_to_dict,
+    get_acknowledgements,
     get_contributors,
     get_affiliations,
     get_date,
     get_paragraphs,
+    get_reference_list
 )
 
 class Chapter:
     """Auxiliary class to parse a chapter from a book."""
+    @property
+    def acknowledgements(self) -> Optional[str]:
+        """Acknowledgements of the chapter."""
+        return get_acknowledgements(self._chapter_back)
+
     @property
     def affiliations(self) -> list[Affiliation]:
         """List of affiliations of the collaborators of the chapter. Each affiliation is represented
@@ -137,6 +144,17 @@ class Chapter:
         return get_text(self._book_meta, './/publisher/publisher-name')
 
     @property
+    def references(self) -> list[Reference]:
+        """References of the chapter.
+        
+        Returns:
+            list[Reference]: A list of Reference objects containing the
+            `ref_list_id`, `ref_list_title`, `ref_id`, `ref_label`, `ref_publication_type`,
+            `authors`, `editors`, `names`, `ref_title`, `ref_source`, `ref_year`, `ref_doi`.
+        """
+        return get_reference_list(self._chapter_back)
+
+    @property
     def title(self) -> Optional[str]:
         """Title of the chapter."""
         return get_text(self._chapter_meta, './/title-group/title')
@@ -144,6 +162,7 @@ class Chapter:
     def __init__(self, data):
         self._data = data
         self._book_meta = data.find('.//book-meta')
+        self._chapter_back = data.find('.//back')
         self._chapter_meta = data.find('.//book-part[@book-part-type="chapter"]/book-part-meta')
 
 
