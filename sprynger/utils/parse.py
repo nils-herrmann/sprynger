@@ -1,6 +1,6 @@
 """Utility functions for parsing data."""
 from functools import reduce
-from typing import Optional
+from typing import Optional, Union
 
 from lxml.etree import _Element
 
@@ -14,6 +14,24 @@ def get_attr(node: Optional[_Element],
         if node.find(f'.//{tag}[@{attr}="{value}"]') is not None:
             return node.find(f'.//{tag}[@{attr}="{value}"]').text
     return None
+
+def chained_get(data: dict, keys: list, default=None) -> Union[str, int, float]:
+    """
+    Retrieve a value from a nested dictionary using a list of keys.
+
+    Args:
+        data (dict): The dictionary to search.
+        keys (list): A list of keys representing the path to the value.
+
+    Returns:
+        The value at the specified path, or `default` if the path does not exist.
+    """
+    for key in keys:
+        if isinstance(data, dict):
+            data = data.get(key)
+        else:
+            return default
+    return data
 
 
 def get_text(node: Optional[_Element],

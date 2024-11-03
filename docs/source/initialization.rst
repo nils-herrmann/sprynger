@@ -7,28 +7,30 @@ You initalize `sprynger` as follows:
 
     >>> import sprynger
 
-    >>> sprynger.init()
+    >>> sprynger.init(api_key='your key')
 
-This reads the configuration from the default locations. You may also specify a different configuration file and API keys:
+This reads your api key and uses the default configuration. You can also define `API_KEY` as an environment
+variable. To use a custom configuration specify `config_file` in `init()`.
 
-.. function:: init(config_dir: Union[str, Path], keys: Optional[List[str]])
+.. function:: init(api_key: Optional[str] = None, config_file: Optional[Union[str, Path]] = None) -> None
 
-   Function to initialize the sprynger library. For more information, see the 
-   `documentation <file:///Users/nilsherrmann/sprynger/docs/build/html/initialization.html#configuration>`_.
+    Function to initialize the sprynger library. For more information go to the
+    `documentation <file:///Users/nilsherrmann/sprynger/docs/build/html/initialization.html#configuration>`_.
 
-   :param config_dir: Path to the configuration file (default is `~/.config/sprynger/sprynger.cfg`).
-   :type config_dir: str
-   :param keys: List of API keys (default is None).
-   :type keys: list, optional
+    :param api_key: API key
+    :type api_key: str, optional
+    :param config_file: Path to the configuration .toml file.
+    :type config_file: str or Path, optional
 
-   :raises FileNotFoundError: If the configuration file is not found.
+    :raises ValueError: If no API key was provided either as an argument or as an
+        environment variable `API_KEY`.
 
-   **Example**:
+    Example:
 
-   .. code:: python
+    .. code:: python
 
-      >>> from sprynger import init
-      >>> init(config_dir='path/to/custom/config.cfg', keys=['key1', 'key2'])
+        from sprynger import init
+        init(api_key='your key', config_file='path/to/custom/config.toml')
 
 
 In case you don't have a configuration file just enter your API key when prompted.
@@ -37,13 +39,7 @@ In case you don't have a configuration file just enter your API key when prompte
 Configuration
 =============
 
-`sprynger` stores values it needs for operation in a configuration file called `sprynger.cfg`. 
-The config file saves credentials as well as directory names for folders that store downloaded results.
-`sprynger` reads this file on startup.
-
-You can find the configuration file in: `~/.config/sprynger/sprynger.cfg`
-
-By default, after initial set-up (see below), the file will look like this:
+The configuration file has to be a TOML file with the following structure. If any information is missing the default will be used.
 
 .. code-block:: cfg
 
@@ -51,9 +47,6 @@ By default, after initial set-up (see below), the file will look like this:
     Metadata = /Users/user/.cache/sprynger/metadata
     Meta = /Users/user/.cache/sprynger/meta
     OpenAccess = /Users/user/.cache/sprynger/open_access
-
-    [Authentication]
-    APIKey = XXX
 
     [Requests]
     Timeout = 20
@@ -63,8 +56,4 @@ By default, after initial set-up (see below), the file will look like this:
 
 Section `[Directories]` contains the paths where `sprynger` should store (cache) downloaded files.  `sprynger` will create them if necessary.
 
-Section `[Authentication]` contains the API Keys which you obtain from https://dev.springernature.com.
-
 Section `[Requests]` contains the default values for the requests library.
-
-Simply edit this file using a simple text editor; changes will take effect the next time you start `sprynger`.  Remember to indent multi-line statements.

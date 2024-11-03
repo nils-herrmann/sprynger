@@ -1,92 +1,92 @@
-from configparser import ConfigParser, NoSectionError
+"""Module to initialize the sprynger library."""
+import tomllib
+import os
 
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Optional, Union
 
-from sprynger.utils.constants import CONFIG_FILE, DEFAULT_PATHS
-from sprynger.utils.create_config import create_config
+from sprynger.exceptions import MissingAPIKeyError
+from sprynger.utils.constants import DEFAULT_PATHS, REQUESTS
 
+API_KEY = None
 CONFIG = None
-CUSTOM_KEYS = None
 
-def init(config_dir: Union[str, Path] = CONFIG_FILE,
-         keys: Optional[List[str]] = None) -> None:
+
+def init(api_key: Optional[str] = None,
+         config_file: Optional[Union[str, Path]] = None) -> None:
     """
     Function to initialize the sprynger library. For more information go to the
     `documentation <file:///Users/nilsherrmann/sprynger/docs/build/html/initialization.html#configuration>`_.
     
     Args:
-        config_dir (str): Path to the configuration file
-        keys (list): List of API keys
+        api_key (str): API key
+        config_file (str): Path to the configuration .toml file.
+        
     
     Raises:
-        FileNotFoundError: If the configuration file is not found.
+        ValueError: If no api key was provided either as argument or as an
+        environment variable `API_KEY`.
     
     Example:
         >>> from sprynger import init
-        >>> init(config_dir='path/to/custom/config.cfg', keys=['key1', 'key2'])
+        >>> init(key='your key', config_file='path/to/custom/config.toml')
     """
+    global API_KEY
     global CONFIG
-    global CUSTOM_KEYS
 
-    config_dir = Path(config_dir)
+    CONFIG = _load_default_config()
 
-    if not config_dir.exists():
-        CONFIG = create_config(config_dir, keys)
-    else:
-        CONFIG = ConfigParser()
-        CONFIG.optionxform = str
-        CONFIG.read(config_dir)
+    if config_file:
+        with open(config_file, 'rb') as f:
+            custom_config = tomllib.load(f)
+        _merge_dicts(CONFIG, custom_config)
 
-    check_sections(CONFIG)
-    check_default_paths(CONFIG, config_dir)
-    create_cache_folders(CONFIG)
+    _create_cache_folders(CONFIG)
 
-    CUSTOM_KEYS = keys
-
-
-def check_sections(config: ConfigParser) -> None:
-    """Auxiliary function to check if all sections exist."""
-    for section in ['Directories', 'Authentication']:
-        if not config.has_section(section):
-            raise NoSectionError(section)
+    API_KEY = api_key or os.environ.get("API_KEY")
+    if not API_KEY:
+        raise ValueError('No API key found. Provide an API key or set the '
+                         'environment variable API_KEY. To get an API key '
+                         'visit: https://dev.springernature.com/')
 
 
-def check_default_paths(config: ConfigParser,
-                        config_path: Path) -> None:
-    """Auxiliary function to check if default cache paths exist.
-    If not, the paths are writen in the config.
+def _load_default_config() -> dict:
+    """Auxiliary function to load the default configuration."""
+    config = {}
+    config['Directories'] = DEFAULT_PATHS
+    config['Requests'] = REQUESTS
+    return config
+
+
+def _merge_dicts(default, custom):
     """
-    for api, path in DEFAULT_PATHS.items():
-        if not config.has_option('Directories', api):
-            config.set('Directories', api, str(path))
-            with open(config_path, 'w', encoding='utf-8') as ouf:
-                config.write(ouf)
+    Recursively merge two dictionaries. The values from the custom dictionary
+    will overwrite those from the default dictionary.
+    """
+    for key, value in custom.items():
+        if isinstance(value, dict) and key in default:
+            _merge_dicts(default[key], value)
+        else:
+            default[key] = value
 
-
-def create_cache_folders(config: ConfigParser) -> None:
+def _create_cache_folders(config: dict) -> None:
     """Auxiliary function to create cache folders."""
-    for _, path in config.items('Directories'):
+    directories = config.get('Directories', {})
+    for _, path in directories.items():
         cache_path = Path(path)
         cache_path.mkdir(parents=True, exist_ok=True)
 
 
-def get_config() -> ConfigParser:
+def get_config() -> dict:
     """Function to get the config parser."""
     if not CONFIG:
-        raise FileNotFoundError('No configuration file found.'
+        raise MissingAPIKeyError('Library not initialized. '
                                 'Please initialize sprynger with init().\n'
                                 'For more information visit: '
                                 'the documentation.')
     return CONFIG
 
 
-def get_keys() -> List[str]:
+def get_key() -> str:
     """Function to get the API keys and overwrite keys in config if needed."""
-    if CUSTOM_KEYS:
-        keys = CUSTOM_KEYS
-    else:
-        keys = [k.strip() for k in CONFIG.get('Authentication', 'APIKey').split(",")]
-    return keys
-
-
+    return API_KEY

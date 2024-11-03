@@ -50,7 +50,7 @@ Download and install the package from PyPI:
 .. code:: python
     
     >>> from sprynger import Meta, OpenAccess, init
-    >>> init()
+    >>> init(api_key='your free api key from https://dev.springernature.com')
     >>>
     >>> # Get metadata of all chapters in the book with ISBN '978-3-031-63497-0'
     >>> book_metadata = Metadata(isbn='978-3-031-63497-0', nr_results=3)

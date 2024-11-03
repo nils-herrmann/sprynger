@@ -1,0 +1,3 @@
+# This is a config used in test_startup
+[Directories]
+Metadata = "./sprynger/tests/"

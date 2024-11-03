@@ -4,6 +4,7 @@ from requests import Response, Session
 from urllib3.util.retry import Retry
 
 from sprynger.utils.startup import get_config
+from sprynger.utils.parse import chained_get
 
 from sprynger.exceptions import (
     APIError,
@@ -47,9 +48,9 @@ def fetch_data(url: str, params: dict) -> Response:
     """Fetch data from the Springer API."""
     # Get the configuration
     config = get_config()
-    max_retries = config.getint('Requests', 'Retries', fallback=5)
-    backoff_factor = config.getfloat('Requests', 'BackoffFactor', fallback=2.0)
-    timeout = config.getint('Requests', 'Timeout', fallback=20)
+    max_retries = int(chained_get(config, ['Requests', 'Retries'], 5))
+    backoff_factor = float(chained_get(config, ['Requests', 'BackoffFactor'], 2.0))
+    timeout = int(chained_get(config, ['Requests', 'Timeout'], 20))
 
     # Create session and retrieve data
     session = create_session(max_retries, backoff_factor)

@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sprynger"
-version = "0.2.0"
+version = "0.3.0"
 authors = [
   { name="Nils Herrmann", email="nils_herrmann@outlook.de" },
 ]
 description = "An API wrapper for Springer Nature"
 readme = "README.rst"
 requires-python = ">=3.9"
-dependencies = ["lxml", "requests", "urllib3"]
+dependencies = ["lxml", "requests", "urllib3", "platformdirs"]
 keywords = ["API", "Springer", "wrapper", "requests", "lxml"]
 license = { text = "MIT" }
 classifiers = [

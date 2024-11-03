@@ -13,7 +13,8 @@ from requests import Response
 
 from sprynger.utils.constants import BASE_URL, FORMAT, LIMIT, ONLINE_API
 from sprynger.utils.fetch import fetch_data
-from sprynger.utils.startup import get_config, get_keys
+from sprynger.utils.parse import chained_get
+from sprynger.utils.startup import get_config, get_key
 
 class Base:
     """Base class to retrieve data from the Springer API."""
@@ -43,15 +44,15 @@ class Base:
         rate_limit = LIMIT['Premium'][api] if premium else LIMIT['Basic'][api]
         limit = min(nr_results, rate_limit)
 
-        keys = get_keys()
+        key = get_key()
         self._url = f'{BASE_URL}/{online_api}/{FORMAT[api]}'
         self._params = {'q': query,
                         's': start,
                         'p': limit,
-                        'api_key': keys[0]}
+                        'api_key': key}
 
         # Generate a cache key based on the parameters
-        cache_dir = config.get('Directories', api)
+        cache_dir = chained_get(config, ['Directories', api])
         self._cache_key = self._create_cache_key(query, start, limit)
         self._cache_file = os.path.join(cache_dir, f'{self._cache_key}.{FORMAT[api]}')
         self._refresh = refresh

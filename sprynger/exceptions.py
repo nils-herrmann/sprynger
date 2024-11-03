@@ -7,6 +7,11 @@ class APIError(Exception):
         self.message = message
         super().__init__(f"{status_code}: {message}")
 
+class MissingAPIKeyError(Exception):
+    """Exception raised when an API key is missing."""
+    def __init__(self, message="API key is missing. Please provide a valid API key."):
+        self.message = message
+        super().__init__(self.message)
 
 class AuthenticationError(APIError):
     """Exception raised for 401/403 Authentication Failures"""

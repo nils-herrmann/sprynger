@@ -1,28 +1,17 @@
 """Test the startup of the sprynger package."""
-from pathlib import Path
-
 from sprynger import init
-from sprynger.utils.startup import CUSTOM_KEYS, get_config, get_keys
+from sprynger.utils.parse import chained_get
+from sprynger.utils.startup import get_config, get_key
 
-
-def test_empty_keys():
-    """Test the empty keys."""
-    assert CUSTOM_KEYS is None
-
+def test_custom_api():
+    """Test use of custom config file"""
+    init(api_key='not existing key',
+         config_file='./sprynger/tests/test_config.toml')
+    config = get_config()
+    assert chained_get(config, ['Directories', 'Metadata']) == './sprynger/tests/'
 
 def test_init():
     """Test the init function."""
     init()
     assert get_config() is not None
-    assert get_keys() is not None
-
-
-def test_create_config():
-    """Test the create_config function."""
-    config_dir = Path.home()/'.config'/'sprynger'/'test_sprynger.cfg'
-    # Dete file
-    config_dir.unlink(missing_ok=True)
-    assert not config_dir.exists()
-    # Create file
-    init(config_dir, ['test_key'])
-    assert config_dir.exists()
+    assert get_key() is not None

@@ -12,6 +12,6 @@ def test_empty_response():
 
 def test_authentication_error():
     """Test the authentication error."""
-    init(keys=['does_not_exist'])
+    init(api_key='does_not_exist')
     with pytest.raises(AuthenticationError, match='Authentication failed. Check your API key.'):
         Metadata('10.1007/s10660-023-09761-x', refresh=True)
