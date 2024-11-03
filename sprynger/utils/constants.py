@@ -1,11 +1,12 @@
 '''Constants for the sprynger package.'''
 from pathlib import Path
+from platformdirs import user_cache_dir
 
 BASE_URL = 'http://api.springernature.com'
 
 CONFIG_FILE = Path.home()/'.config'/'sprynger'/'sprynger.cfg'
 
-BASE_PATH = Path.home()/'.cache'/'sprynger'
+BASE_PATH = Path(user_cache_dir('sprynger'))
 DEFAULT_PATHS = {
     'Metadata': BASE_PATH/'metadata',
     'Meta': BASE_PATH/'meta',
@@ -39,6 +40,12 @@ LIMIT = {
         'OpenAccessJournal': 20,
         'OpenAccessBook': 20,
     },
+}
+
+REQUESTS = {
+    'Timeout': 20,
+    'Retries': 5,
+    'BackoffFactor': 2.0
 }
 
 VALID_FIELDS = {
