@@ -1,12 +1,16 @@
+"""Sphinx configuration."""
 import os
 import sys
+import tomllib
 sys.path.insert(0, os.path.abspath('../../'))
 
+with open('../../pyproject.toml', 'rb') as f:
+    toml_data = tomllib.load(f)
+    release = toml_data['project']['version']
+    project = toml_data['project']['name']
+    author = toml_data['project']['authors'][0].get('name')
 
-project = 'sprynger'
 copyright = '2024, Nils A. Herrmann de Alba'
-author = 'Nils A. Herrmann de Alba'
-release = '0.2.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

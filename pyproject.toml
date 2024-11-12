@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sprynger"
-version = "0.3.0"
+version = "0.3.1"
 authors = [
-  { name="Nils Herrmann", email="nils_herrmann@outlook.de" },
+  { name="Nils A. Herrmann de Alba", email="nils_herrmann@outlook.de" },
 ]
 description = "An API wrapper for Springer Nature"
 readme = "README.rst"
