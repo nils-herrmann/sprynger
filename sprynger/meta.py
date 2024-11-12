@@ -25,34 +25,27 @@ class Meta(Metadata):
             `copyright`, `abstract`, `conferenceInfo`, 
             `keyword`, `subjects` and `disciplines`.
         """
+        def parse_urls(urls):
+            return [MetaURL(format=url.get('format'), platform=url.get('platform'), value=url.get('value')) for url in urls]
+
+        def parse_creators(creators):
+            return [MetadataCreator(creator=creator.get('creator'), ORCID=creator.get('ORCID')) for creator in creators]
+
+        def parse_disciplines(disciplines):
+            return [MetaDiscipline(id=discipline.get('id'), term=discipline.get('term')) for discipline in disciplines]
+
         records_list = []
         for record in self._json.get('records', []):
-            # Parse the URLs
-            url_list = []
-            for url in record.get('url', []):
-                url_format = url.get('format')
-                platform = url.get('platform')
-                value = url.get('value')
-                url_list.append(MetaURL(format=url_format, platform=platform, value=value))
-            # Parse the creators
-            creators = []
-            for ceator in record.get('creators', []):
-                creators.append(MetadataCreator(creator=ceator.get('creator'),
-                                            ORCID=ceator.get('ORCID')))
-            # Parse the disciplines
-            disciplines = []
-            for discipline in record.get('disciplines', []):
-                disciplines.append(
-                    MetaDiscipline(id=discipline.get('id'),
-                                   term=discipline.get('term'))
-                                   )
+            urls = parse_urls(record.get('url', []))
+            creators = parse_creators(record.get('creators', []))
+            disciplines = parse_disciplines(record.get('disciplines', []))
 
             records_list.append(
                 MetaRecord(
                     contentType=record.get('contentType'),
                     identifier=record.get('identifier'),
                     language=record.get('language'),
-                    urls=url_list,
+                    urls=urls,
                     title=record.get('title'),
                     creators=creators,
                     publicationName=record.get('publicationName'),

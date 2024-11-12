@@ -33,15 +33,19 @@ def create_session(max_retries: int,
 def check_response(response: Response) -> None:
     """Check the response."""
     status_code = response.status_code
+
+    error_map = {
+        400: InvalidRequestError,
+        401: AuthenticationError,
+        403: AuthenticationError,
+        404: ResourceNotFoundError
+    }
+
     if status_code != 200:
-        if response.status_code == 400:
-            raise InvalidRequestError(response.status_code)
-        elif response.status_code == 401 or response.status_code == 403:
-            raise AuthenticationError(response.status_code)
-        elif response.status_code == 404:
-            raise ResourceNotFoundError(response.status_code)
-        else:
-            raise APIError(response.status_code, "Unhandled error occurred")
+        error_class = error_map.get(status_code, APIError)
+        if error_class is APIError:
+            raise error_class(status_code, "Unhandled error occurred")
+        raise error_class(status_code)
 
 
 def fetch_data(url: str, params: dict) -> Response:
