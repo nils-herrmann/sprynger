@@ -2,6 +2,7 @@
 from __future__ import annotations
 from math import ceil
 import os
+import hashlib
 import json
 from json.decoder import JSONDecodeError
 from typing import Optional, Literal, Union
@@ -53,8 +54,8 @@ class Base:
 
         # Generate a cache key based on the parameters
         cache_dir = chained_get(config, ['Directories', api])
-        self._cache_key = self._create_cache_key(query, start, limit)
-        self._cache_file = os.path.join(cache_dir, f'{self._cache_key}.{FORMAT[api]}')
+        cache_key = self._create_cache_key(query, start, limit)
+        self._cache_file = os.path.join(cache_dir, f'{cache_key}.{FORMAT[api]}')
         self._refresh = refresh
         self._cache = cache
 
@@ -73,8 +74,8 @@ class Base:
             # Update variables for querying the next chunk
             self._params.update({'s': new_start,
                                  'p': limit})
-            self._cache_key = self._create_cache_key(query, new_start, limit)
-            self._cache_file = os.path.join(cache_dir, f'{self._cache_key}.{FORMAT[api]}')
+            cache_key = self._create_cache_key(query, new_start, limit)
+            self._cache_file = os.path.join(cache_dir, f'{cache_key}.{FORMAT[api]}')
             tmp_res = self._fetch_or_load()
             self._res = self._append_response(tmp_res)
 
@@ -82,8 +83,7 @@ class Base:
     def _create_cache_key(self, query: str, start: int, limit: int) -> str:
         """Create a cache key based on the query and start."""
         cache_key = f'{query}_{start}_{limit}'
-        for old, new in [(':', '-'), ('/', '-')]:
-            cache_key = cache_key.replace(old, new)
+        cache_key = hashlib.md5(cache_key.encode()).hexdigest()
         return cache_key
 
 
