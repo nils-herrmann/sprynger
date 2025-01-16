@@ -127,7 +127,7 @@ class Metadata(Retrieve):
                 it will be used as the cache expiration time in days. Defaults to False.
             kwargs: Additional fields for query (e.g. issn, datefrom, dateto, etc.). For a comprehensive list of
                 available fields, see the 
-                `Springer Metadata API documentation <https://docs-dev.springernature.com/docs/#querying-api/querying-api>`_.
+                `Springer Metadata API documentation <https://dev.springernature.com/docs/supported-query-params/>`_.
 
         This class is iterable, allowing you to iterate over the metadata `records` retrieved.
         It also supports indexing to access the metadata of specific documents.

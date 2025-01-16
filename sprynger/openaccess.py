@@ -10,7 +10,7 @@ Example:
     >>> for doc in oa:
     >>>     print(doc)
 """
-from typing import Optional, Union
+from typing import Union
 
 from sprynger.retrieve import Retrieve
 from sprynger.openaccess_article import Article
@@ -61,7 +61,7 @@ class OpenAccess(Retrieve):
             refresh (Union[bool, int]): Refresh the cache.
             **kwargs: Additional fields for query (e.g. issn, datefrom, dateto, etc.).
                 For a comprehensive list of available fields, see the 
-                `Springer Metadata API documentation <https://docs-dev.springernature.com/docs/#querying-api/querying-api>`_.
+                `Springer Metadata API documentation <https://dev.springernature.com/docs/supported-query-params/>`_.
         
         Example:
             Retrieve Open Access articles from the journal with ISSN '2223-7704' published after 

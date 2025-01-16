@@ -24,7 +24,8 @@
     :maxdepth: 1
     :caption: 🔎 How to query ?
 
-    how_to_query
+    query/how_to_query.rst
+    query/supported_query_parameters.rst
 
 
 
