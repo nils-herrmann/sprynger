@@ -1,7 +1,12 @@
 """Sphinx configuration."""
 import os
 import sys
-import tomllib
+
+try:
+    import tomllib  # Python 3.11+
+except ModuleNotFoundError:
+    import tomli as tomllib 
+
 sys.path.insert(0, os.path.abspath('../../'))
 
 with open('../../pyproject.toml', 'rb') as f:
