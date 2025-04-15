@@ -1,0 +1,37 @@
+name: Run Tests and Upload Coverage
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov
+        pip install -e .
+
+    - name: Run tests
+      env:
+        API_KEY: ${{ secrets.SPRYNGER_KEY }}
+      run: pytest --cov=sprynger --cov-branch sprynger/tests/ --cov-report=xml
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        slug: nils-herrmann/sprynger
