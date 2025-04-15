@@ -21,6 +21,9 @@ Simple API wrapper for the `Springer Nature APIs <https://dev.springernature.com
 .. image:: https://img.shields.io/pypi/l/sprynger.svg
     :target: https://pypi.org/project/sprynger/
 
+.. image:: https://github.com/nils-herrmann/sprynger/actions/workflows/test.yml/badge.svg
+   :target: https://github.com/nils-herrmann/sprynger/actions/workflows/test.yml
+
 .. image:: https://codecov.io/gh/nils-herrmann/sprynger/graph/badge.svg?token=GF3FMVUWV3 
  :target: https://codecov.io/gh/nils-herrmann/sprynger
 
