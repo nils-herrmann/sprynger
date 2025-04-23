@@ -1,20 +1,25 @@
 """Module with the chapter class for the OpenAccess class."""
 from typing import Optional, Union
 
-from sprynger.utils.data_structures import Affiliation, Contributor, Date, Paragraph, Reference
+from sprynger.utils.data_structures import Affiliation, Contributor, Date, Reference, Section
 from sprynger.utils.parse import get_attr, get_text, make_int_if_possible
 from sprynger.utils.parse_openaccess import (
-    affs_to_dict,
+    get_abstract,
     get_acknowledgements,
     get_contributors,
     get_affiliations,
     get_date,
-    get_paragraphs,
-    get_reference_list
+    get_reference_list,
+    get_sections
 )
 
 class Chapter:
     """Auxiliary class to parse a chapter from a book."""
+    @property
+    def abstract(self) -> Optional[str]:
+        """Abstract of the chapter."""
+        return get_abstract(self._chapter_meta)
+
     @property
     def acknowledgements(self) -> Optional[str]:
         """Acknowledgements of the chapter."""
@@ -30,11 +35,6 @@ class Chapter:
         contributor's `affiliations_ref_nr`.
         """
         return get_affiliations(self._data)
-
-    @property
-    def affiliations_dict(self) -> dict[str, Affiliation]:
-        """Auxiliary property to query the affiliations by their reference number."""
-        return affs_to_dict(self.affiliations)
 
     @property
     def contributors(self) -> list[Contributor]:
@@ -109,6 +109,11 @@ class Chapter:
         return doi
 
     @property
+    def full_text(self) -> Optional[str]:
+        """Raw full text of the chapter."""
+        return ' '.join(self._book_body.itertext())
+
+    @property
     def isbn_electronic(self) -> Optional[str]:
         """ISBN of the electronic version of the book."""
         return get_attr(self._book_meta, 'isbn', 'content-type', 'epub')
@@ -119,14 +124,14 @@ class Chapter:
         return get_attr(self._book_meta, 'isbn', 'content-type', 'ppub')
 
     @property
-    def paragraphs(self) -> list[Paragraph]:
-        """Paragraphs of the book chapter.
+    def parsed_text(self) -> list[Section]:
+        """Parsed chapter's text divided into sections.
         
         Returns:
-            list[Paragraph]: A list of Paragraph objects containing the
-            `paragraph_id`, `section_id`, `section_title`, and `text`.
+            list[Section]: A list of Section objects containing the
+            `section_id`, `section_title`, and `text`.
         """
-        return get_paragraphs(self._data)
+        return get_sections(self._book_body)
 
     @property
     def publisher_id(self) -> Optional[str]:
@@ -162,6 +167,7 @@ class Chapter:
     def __init__(self, data):
         self._data = data
         self._book_meta = data.find('.//book-meta')
+        self._book_body = data.find('./book-part/body')
         self._chapter_back = data.find('.//back')
         self._chapter_meta = data.find('.//book-part[@book-part-type="chapter"]/book-part-meta')
 

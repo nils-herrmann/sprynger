@@ -1,20 +1,25 @@
 """Module with the Article class for the OpenAccess class."""
 from typing import Optional
 
-from sprynger.utils.data_structures import Affiliation, Contributor, Date, Paragraph, Reference
+from sprynger.utils.data_structures import Affiliation, Contributor, Date, Section, Reference
 from sprynger.utils.parse import get_attr, get_text
 from sprynger.utils.parse_openaccess import (
-    affs_to_dict,
+    get_abstract,
     get_acknowledgements,
     get_contributors,
     get_affiliations,
     get_date,
-    get_paragraphs,
-    get_reference_list
+    get_reference_list,
+    get_sections
 )
 
 class Article:
     """Auxiliary class to parse an article from a journal."""
+    @property
+    def abstract(self) -> Optional[str]:
+        """Abstract of the article."""
+        return get_abstract(self._article_meta)
+
     @property
     def acknowledgements(self) -> Optional[str]:
         """Acknowledgements of the article."""
@@ -30,11 +35,6 @@ class Article:
         contributor's `affiliations_ref_nr`.
         """
         return get_affiliations(self._data)
-
-    @property
-    def affiliations_dict(self) -> dict[str, Affiliation]:
-        """Auxiliary property to query the affiliations by their reference number."""
-        return affs_to_dict(self.affiliations)
 
     @property
     def article_type(self) -> Optional[str]:
@@ -92,6 +92,11 @@ class Article:
     def doi(self) -> Optional[str]:
         """DOI of the article."""
         return get_attr(self._article_meta, 'article-id', 'pub-id-type', 'doi')
+    
+    @property
+    def full_text(self) -> Optional[str]:
+        """Raw full text of the article."""
+        return ' '.join(self._article_body.itertext())
 
     @property
     def issn_electronic(self) -> Optional[str]:
@@ -134,14 +139,14 @@ class Article:
         return get_attr(self._article_meta, 'article-id', 'pub-id-type', 'manuscript')
 
     @property
-    def paragraphs(self) -> list[Paragraph]:
-        """Paragraphs of the article.
+    def parsed_text(self) -> list[Section]:
+        """Parsed article's text divided into sections.
 
         Returns:
-            list[Paragraph]: A list of Paragraph objects containing the
-            `paragraph_id`, `section_id`, `section_title`, and `text`.
+            list[Section]: A list of Section objects containing the 
+            `section_id`, `section_title`, and `text`.
         """
-        return get_paragraphs(self._data)
+        return get_sections(self._article_body)
 
     @property
     def publisher_id(self) -> Optional[str]:
@@ -178,6 +183,7 @@ class Article:
         self._data = data
         self._journal_meta = data.find('.//front/journal-meta')
         self._article_meta = data.find('.//front/article-meta')
+        self._article_body = data.find('./body')
         self._article_back = data.find('.//back')
 
     def __repr__(self) -> str:

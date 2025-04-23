@@ -216,3 +216,12 @@ VALID_FIELDS = {
         "plan": ["Premium"]
     }
 }
+
+
+EXCLUDED_TAGS = {
+    # 'ref', 'xref', 'fig', 'table-wrap', 'table',
+    # 'caption', 'graphic', 'inline-graphic', 'media',
+    # 'label', 'fn', 'license', 'permissions',
+    # 'supplementary-material', 'custom-meta', 'notes',
+    'index-term'
+}

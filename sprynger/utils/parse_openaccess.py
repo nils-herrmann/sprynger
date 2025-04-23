@@ -3,13 +3,16 @@ from typing import Optional
 
 from lxml.etree import _Element
 
-from sprynger.utils.data_structures import Affiliation, Contributor, Date, Paragraph, Reference
+from sprynger.utils.constants import EXCLUDED_TAGS
+from sprynger.utils.data_structures import Affiliation, Contributor, Date, Reference, Section
 from sprynger.utils.parse import get_attr, get_text, make_int_if_possible, stringify_descendants
 
 
-def affs_to_dict(affs) -> dict[str, Affiliation]:
-    """Auxiliary function to query the affiliations by their number."""
-    return {aff.nr: aff for aff in affs}
+def get_abstract(meta: _Element) -> Optional[str]:
+    """Parse the abstract of the document."""
+    abs_element = meta.find('.//abstract')
+    abstract_text = ' '.join(p.text for p in abs_element.findall('.//p'))
+    return abstract_text
 
 
 def get_acknowledgements(back: _Element) -> Optional[str]:
@@ -76,34 +79,72 @@ def get_date(date_node: _Element) -> Date:
                 year=make_int_if_possible(get_text(date_node, './/year')))
 
 
-def get_paragraphs(xml) -> list[Paragraph]:
-    """Paragraphs of the OpenAccess document.
+def get_sections(xml_body) -> list[Section]:
+    """Section of the OpenAccess document.
 
     Returns:
-        list[Paragraph]: A list of Paragraph objects containing the 
-        `paragraph_id`, `section_id`, `section_title`, and `text`.
+        list[Section]: A list of Section objects containing the
+        `section_id`, `section_title`, and `text`.
     """
-    if xml is not None:
-        parsed_paragraphs = []
-        for paragraph in xml.findall('.//p[@id]'):
-            paragraph_id = paragraph.get('id')
-            paragraph_text = ''.join(paragraph.itertext())
+    if xml_body is None:
+        return []
 
-            parent = paragraph.getparent()
-            section_id = parent.get('id')
-            section_title = get_text(parent, 'title')
+    result = []
+    text_index = [0]
 
+    def traverse(element, c_sec_id, c_sec_title, collected_texts, section_first_index):
+        for child in element:
+            if child.tag in EXCLUDED_TAGS:
+                # Skip its content, but still get its tail text
+                if child.tail and child.tail.strip():
+                    if section_first_index[0] is None:
+                        section_first_index[0] = text_index[0]
+                    collected_texts.append(child.tail.strip())
+                    text_index[0] += 1
+                continue
 
-            paragraph_data = Paragraph(
-                paragraph_id=paragraph_id,
-                section_id=section_id,
-                section_title=section_title,
-                text=paragraph_text.strip()
-            )
-            parsed_paragraphs.append(paragraph_data)
+            if child.tag == 'sec':
+                n_sec_id = child.get('id')
+                n_sec_title = get_text(child, 'title')
 
-        return parsed_paragraphs
-    return []
+                sub_texts = []
+                sub_first_index = [None]
+                traverse(child, n_sec_id, n_sec_title, sub_texts, sub_first_index)
+
+                if sub_texts:
+                    result.append((n_sec_id, n_sec_title,' '.join(sub_texts), sub_first_index[0]))
+            else:
+                if child.text and child.text.strip():
+                    if section_first_index[0] is None:
+                        section_first_index[0] = text_index[0]
+                    collected_texts.append(child.text.strip())
+                    text_index[0] += 1
+
+                traverse(child, c_sec_id, c_sec_title, collected_texts, section_first_index)
+
+            if child.tail and child.tail.strip():
+                if section_first_index[0] is None:
+                    section_first_index[0] = text_index[0]
+                collected_texts.append(child.tail.strip())
+                text_index[0] += 1
+    
+    # Initialize the traversal
+    top_level_texts = []
+    top_level_index = [None]
+    traverse(xml_body, None, None, top_level_texts, top_level_index)
+
+    if top_level_texts:
+        result.append((None, None, ' '.join(top_level_texts), top_level_index[0]))
+
+    # Sort the result by index of first text
+    result.sort(key=lambda para: para[3])
+
+    # Create Paragraph objects
+    out = [Section(section_id, section_title, text)
+           for section_id, section_title, text, _ in result]
+
+    return out
+
 
 def _get_doi(ref_node: _Element) -> Optional[str]:
     """Parse DOIs from a reference node."""

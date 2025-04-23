@@ -31,9 +31,9 @@ MetadataFacets = create_namedtuple('MetadataFacets', fields_metadata_facets)
 #         Open Access       #
 #############################
 
-# Open Access Paragraph
-fields_oa_paragraphs = ['paragraph_id', 'section_id', 'section_title', 'text']
-Paragraph = create_namedtuple('Paragraph', fields_oa_paragraphs)
+# Open Access Section
+fields_oa_section = ['section_id', 'section_title', 'text']
+Section = create_namedtuple('Section', fields_oa_section)
 
 fields_oa_contributor = ['type', 'nr', 'orcid', 'surname', 'given_name', 'email', 'affiliations_ref_nr']
 Contributor = create_namedtuple('Contributor', fields_oa_contributor)
