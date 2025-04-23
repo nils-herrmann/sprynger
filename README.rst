@@ -79,7 +79,7 @@ Download and install the package from PyPI:
     4350
     >>> for document in results:
     >>>    print(document.title)
-    >>>    print(document.full-text)
+    >>>    print(document.full_text)
     'A neural network assisted' 
         'Introduction Quantum sensing 1  and metrology 2  are important branches of modern quantum technologi...'
     'Experimental demonstration of classical analogous time-dependent superposition of states'
