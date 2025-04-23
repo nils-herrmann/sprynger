@@ -9,7 +9,9 @@ from sprynger.utils.parse import chained_get
 from sprynger.exceptions import (
     APIError,
     AuthenticationError,
+    InternalServerError,
     InvalidRequestError,
+    RateLimitError,
     ResourceNotFoundError,
 )
 
@@ -38,7 +40,9 @@ def check_response(response: Response) -> None:
         400: InvalidRequestError,
         401: AuthenticationError,
         403: AuthenticationError,
-        404: ResourceNotFoundError
+        404: ResourceNotFoundError,
+        429: RateLimitError,
+        500: InternalServerError
     }
 
     if status_code != 200:
