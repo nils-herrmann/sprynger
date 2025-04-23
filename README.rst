@@ -92,7 +92,7 @@ Download and install the package from PyPI:
 📖 Documentation
 -----------------
 
-For a comprehensive guide, see the documentation in `read the docs <https://sprynger.readthedocs.io/en/latest/index.html>`_.
+For a comprehensive guide, see the documentation in `read the docs <https://sprynger.readthedocs.io/en/stable/>`_.
 
 ⭐️ Give the package a star
 ---------------------------
