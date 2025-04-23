@@ -73,19 +73,19 @@ Download and install the package from PyPI:
     >>> book_metadata.facets
     [MetadataFacets(facet='subject', value='Artificial Intelligence', count='27'),...]
     >>> 
-    >>> # Retrieve full-text of 'journal articles' with the keyword 'quantum computing' published before 2023
+    >>> # Retrieve full-text of three 'journal articles' with the keyword 'quantum computing' published before 2023
     >>> results = OpenAccess('"quantum computing"', dateto='2022-12-30', type='Journal Article', nr_results=3)
     >>> results.documents_found
     4350
     >>> for document in results:
     >>>    print(document.title)
-    >>>    print(document.paragraphs[0].text)
+    >>>    print(document.full-text)
     'A neural network assisted' 
-        'A versatile magnetometer must deliver a readable response when exposed to target fields ...'
+        'Introduction Quantum sensing 1  and metrology 2  are important branches of modern quantum technologi...'
     'Experimental demonstration of classical analogous time-dependent superposition of states'
-        'One of the quantum theory concepts on which quantum information processing stands is superposition ...'
+        'Introduction The increased demand for quantum information science (QIS) and quantum computing 1 ,  2...'
     'A quantum-like cognitive approach to modeling human biased selection behavior'
-        'Cognitive biases of the human mind significantly influence the human decision-making process ...'
+        'Introduction With the advent of the Internet of Things and social networks, the reformation of the d...'
 
 .. documentation-end
 
