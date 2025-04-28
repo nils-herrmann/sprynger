@@ -5,10 +5,22 @@ Iterate or slice the OpenAccess object to get the documents. Documents can be ei
 - Articles: OpenAccess articles from journals.
 - Chapters: OpenAccess chapters from books.
 
+The OpenAccess class enables two options for full-text retrieval:
+
+1. Use the `full_text` property to get the full text of the document in XML (JATS) format.
+2. Use the `parsed_text` property to get the full text of the document parsed into sections.
+
 Example:
-    >>> oa = OpenAccess('Eigenvalues', datefrom='2024-01-01')
+    >>> from sprynger import OpenAccess
+    >>> oa = OpenAccess('"Gaussian-mixture models"', datefrom='2024-01-01')
+    >>> # Print doi and access the full text of the document
     >>> for doc in oa:
-    >>>     print(doc)
+    >>>     print(doc.doi)
+    >>>     print(doc.full_text)
+    >>>     print(doc.parsed_text)
+
+
+
 """
 from typing import Union
 

@@ -11,9 +11,7 @@ sprynger.OpenAccess
 .. autoclass:: sprynger.openaccess.Article
     :members:
     :undoc-members:
-    :show-inheritance:
 
 .. autoclass:: sprynger.openaccess.Chapter
     :members:
     :undoc-members:
-    :show-inheritance:
