@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sprynger"
-version = "0.3.2"
+version = "0.4.0"
 authors = [
   { name="Nils A. Herrmann de Alba", email="nils_herrmann@outlook.de" },
 ]

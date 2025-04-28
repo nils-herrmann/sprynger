@@ -3,7 +3,7 @@ from typing import Optional
 
 from lxml.etree import _Element
 
-from sprynger.utils.constants import EXCLUDED_TAGS
+from sprynger.utils.constants import INCLUDED_TAGS
 from sprynger.utils.data_structures import Affiliation, Contributor, Date, Reference, Section
 from sprynger.utils.parse import get_attr, get_text, make_int_if_possible, stringify_descendants
 
@@ -80,71 +80,75 @@ def get_date(date_node: _Element) -> Date:
 
 
 def get_sections(xml_body) -> list[Section]:
-    """Section of the OpenAccess document.
+    """Extracts sections from the OpenAccess XML document.
+
+    Args:
+        xml_body: Root XML element.
 
     Returns:
         list[Section]: A list of Section objects containing the
-        `section_id`, `section_title`, and `text`.
+        `section_id`, `section_title`, and the extracted `text`.
     """
     if xml_body is None:
         return []
 
-    result = []
-    text_index = [0]
+    result = []  # To store all sections temporarily
+    text_counter = 0  # Global text counter to track the reading order
 
-    def traverse(element, c_sec_id, c_sec_title, collected_texts, section_first_index):
+    def traverse(element, section_id=None, section_title=None):
+        """Recursively traverses the XML tree to extract text and sections."""
+        nonlocal text_counter
+        texts = []       # Collects all text pieces for this section
+        first_index = None  # Index where first text for this section appears
+
         for child in element:
-            if child.tag in EXCLUDED_TAGS:
-                # Skip its content, but still get its tail text
-                if child.tail and child.tail.strip():
-                    if section_first_index[0] is None:
-                        section_first_index[0] = text_index[0]
-                    collected_texts.append(child.tail.strip())
-                    text_index[0] += 1
-                continue
-
             if child.tag == 'sec':
+                # Found a new subsection
                 n_sec_id = child.get('id')
                 n_sec_title = get_text(child, 'title')
 
-                sub_texts = []
-                sub_first_index = [None]
-                traverse(child, n_sec_id, n_sec_title, sub_texts, sub_first_index)
+                # Recursively process this subsection
+                sec_texts, sec_first_idx = traverse(child, n_sec_id, n_sec_title)
 
-                if sub_texts:
-                    result.append((n_sec_id, n_sec_title,' '.join(sub_texts), sub_first_index[0]))
+                if sec_texts:
+                    # Store the extracted subsection
+                    result.append((n_sec_id, n_sec_title, ' '.join(sec_texts), sec_first_idx))
             else:
-                if child.text and child.text.strip():
-                    if section_first_index[0] is None:
-                        section_first_index[0] = text_index[0]
-                    collected_texts.append(child.text.strip())
-                    text_index[0] += 1
+                # Process text inside allowed tags
+                if child.tag in INCLUDED_TAGS and (child.text and child.text.strip()):
+                    if first_index is None:
+                        first_index = text_counter
+                    texts.append(child.text.strip())
+                    text_counter += 1
 
-                traverse(child, c_sec_id, c_sec_title, collected_texts, section_first_index)
+                # Process any nested children
+                sub_texts, sub_first_idx = traverse(child, section_id, section_title)
+                if sub_texts:
+                    if first_index is None:
+                        first_index = sub_first_idx
+                    texts.extend(sub_texts)
 
-            if child.tail and child.tail.strip():
-                if section_first_index[0] is None:
-                    section_first_index[0] = text_index[0]
-                collected_texts.append(child.tail.strip())
-                text_index[0] += 1
-    
-    # Initialize the traversal
-    top_level_texts = []
-    top_level_index = [None]
-    traverse(xml_body, None, None, top_level_texts, top_level_index)
+                # Process any trailing text (tail)
+                if child.tail and child.tail.strip():
+                    if first_index is None:
+                        first_index = text_counter
+                    texts.append(child.tail.strip())
+                    text_counter += 1
 
-    if top_level_texts:
-        result.append((None, None, ' '.join(top_level_texts), top_level_index[0]))
+        return texts, first_index
 
-    # Sort the result by index of first text
-    result.sort(key=lambda para: para[3])
+    # Start traversing from the root
+    top_texts, top_index = traverse(xml_body)
 
-    # Create Paragraph objects
-    out = [Section(section_id, section_title, text)
-           for section_id, section_title, text, _ in result]
+    if top_texts:
+        # If any text is outside sections, add it too
+        result.append((None, None, ' '.join(top_texts), top_index))
 
-    return out
+    # Sort all sections by the order their first text appeared
+    result.sort(key=lambda x: x[3])
 
+    # Create Section objects from the result
+    return [Section(sec_id, sec_title, text) for sec_id, sec_title, text, _ in result]
 
 def _get_doi(ref_node: _Element) -> Optional[str]:
     """Parse DOIs from a reference node."""

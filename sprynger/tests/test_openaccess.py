@@ -65,10 +65,10 @@ def test_article_dates():
 
 def test_article_full_text():
     """Test the full text of the article."""
-    expected_start = 'Introduction With the rapid development of computer Internet technology'
+    expected_start = '<body xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink"><sec id="Sec1"><title>Introduction</title><p id="Par2">With the rapid development of computer Internet t'
     assert article[0].full_text.startswith(expected_start)
     
-    expected_end = 'The generalization ability of the training model for the minority attack categories is insufficient. We can continue to improve it in the future.'
+    expected_end = 'tion rate of the minority categories. The generalization ability of the training model for the minority attack categories is insufficient. We can continue to improve it in the future.</p></sec></body>'
     assert article[0].full_text.endswith(expected_end)
 
 
@@ -196,10 +196,10 @@ def test_chapter_dates():
 
 def test_chapter_full_text():
     """Test the full text of the chapter."""
-    expected_start = 'Introduction The continued Policy  rise of the information Information Data governance (DG) economy Data scientist'
+    expected_start = '<body xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink"><sec id="Sec1"><title>Introduction</title><p id="Par2">The continued<index-term id="ITerm1"><term>Policy</term></index-term> rise of the information<index-term id="ITerm2"><term>Information</term></index-term><index-term id="ITerm3"><term>Data governance (DG)</term></index-term>economy<index-term id="ITerm4"><term>Data scientist</term></index-term> meant an increase in the use of data<index-term id="ITerm5"><term>Data</term></index-term> to build and deploy many data-driven products. These data-driven products are used to extract meaningful insights from raw information'
     assert chapter_with_text[0].full_text.startswith(expected_start)
 
-    expected_end = 'within our practice that works to develop best practice and also highlight challenges Challenges  in ethics, fairness and mitigating abuse.'
+    expected_end = 'rm> in ethics, fairness and mitigating abuse.</p></list-item></list></p></sec></body>'
     assert chapter_with_text[0].full_text.endswith(expected_end)
 
 

@@ -25,7 +25,7 @@ class OpenAccess(Retrieve):
         return self._get_total_results()
 
     def _get_documents(self) -> list[Union[Chapter, Article]]:
-        """Auciliary method to retrieve the documents from the Open Access API."""
+        """Auxiliary method to retrieve the documents from the Open Access API."""
         documents = []
         for record in self._xml.find('.//records'):
             if record.tag == 'book-part-wrapper':

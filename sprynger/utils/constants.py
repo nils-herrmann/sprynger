@@ -218,10 +218,17 @@ VALID_FIELDS = {
 }
 
 
-EXCLUDED_TAGS = {
-    # 'ref', 'xref', 'fig', 'table-wrap', 'table',
-    # 'caption', 'graphic', 'inline-graphic', 'media',
-    # 'label', 'fn', 'license', 'permissions',
-    # 'supplementary-material', 'custom-meta', 'notes',
-    'index-term'
+INCLUDED_TAGS = {
+    # Main body text elements
+    'p', 'sec', 'title', 'subtitle', 'disp-quote', 'list', 'list-item', 'def-list', 'def-item',
+    # Inline formatting
+    'italic', 'bold', 'underline', 'monospace', 'sup', 'sub', 'sc', 'break',
+    # Special blocks
+    #'fig', 'caption', 'table-wrap', 'table', 'thead', 'tbody', 'tr', 'td', 'th', 'code', 'preformat',
+    # References and links
+    'xref', 'ext-link', 'uri',
+    # Math
+    #'inline-formula', 'disp-formula',
+    # Misc
+    'label'
 }

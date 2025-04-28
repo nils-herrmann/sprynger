@@ -1,6 +1,8 @@
 """Module with the chapter class for the OpenAccess class."""
 from typing import Optional, Union
 
+from lxml import etree
+
 from sprynger.utils.data_structures import Affiliation, Contributor, Date, Reference, Section
 from sprynger.utils.parse import get_attr, get_text, make_int_if_possible
 from sprynger.utils.parse_openaccess import (
@@ -110,8 +112,8 @@ class Chapter:
 
     @property
     def full_text(self) -> Optional[str]:
-        """Raw full text of the chapter."""
-        return ' '.join(self._book_body.itertext())
+        """Raw full text of the chapter in JATS format."""
+        return etree.tostring(self._chapter_body, encoding="unicode")
 
     @property
     def isbn_electronic(self) -> Optional[str]:
@@ -131,7 +133,7 @@ class Chapter:
             list[Section]: A list of Section objects containing the
             `section_id`, `section_title`, and `text`.
         """
-        return get_sections(self._book_body)
+        return get_sections(self._chapter_body)
 
     @property
     def publisher_id(self) -> Optional[str]:
@@ -167,7 +169,7 @@ class Chapter:
     def __init__(self, data):
         self._data = data
         self._book_meta = data.find('.//book-meta')
-        self._book_body = data.find('./book-part/body')
+        self._chapter_body = data.find('./book-part/body')
         self._chapter_back = data.find('.//back')
         self._chapter_meta = data.find('.//book-part[@book-part-type="chapter"]/book-part-meta')
 

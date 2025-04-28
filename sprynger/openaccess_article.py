@@ -1,6 +1,8 @@
 """Module with the Article class for the OpenAccess class."""
 from typing import Optional
 
+from lxml import etree
+
 from sprynger.utils.data_structures import Affiliation, Contributor, Date, Section, Reference
 from sprynger.utils.parse import get_attr, get_text
 from sprynger.utils.parse_openaccess import (
@@ -92,11 +94,11 @@ class Article:
     def doi(self) -> Optional[str]:
         """DOI of the article."""
         return get_attr(self._article_meta, 'article-id', 'pub-id-type', 'doi')
-    
+
     @property
     def full_text(self) -> Optional[str]:
-        """Raw full text of the article."""
-        return ' '.join(self._article_body.itertext())
+        """Raw full text of the article in JATS format."""
+        return etree.tostring(self._article_body, encoding="unicode")
 
     @property
     def issn_electronic(self) -> Optional[str]:

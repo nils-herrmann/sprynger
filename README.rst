@@ -76,16 +76,20 @@ Download and install the package from PyPI:
     >>> # Retrieve full-text of three 'journal articles' with the keyword 'quantum computing' published before 2023
     >>> results = OpenAccess('"quantum computing"', dateto='2022-12-30', type='Journal Article', nr_results=3)
     >>> results.documents_found
-    4350
+    3515
     >>> for document in results:
     >>>    print(document.title)
-    >>>    print(document.full_text)
+    >>>    for section in document.parsed_text:
+    >>>        print(section.text)
     'A neural network assisted' 
         'Introduction Quantum sensing 1  and metrology 2  are important branches of modern quantum technologi...'
+        ...
     'Experimental demonstration of classical analogous time-dependent superposition of states'
         'Introduction The increased demand for quantum information science (QIS) and quantum computing 1 ,  2...'
+        ...
     'A quantum-like cognitive approach to modeling human biased selection behavior'
         'Introduction With the advent of the Internet of Things and social networks, the reformation of the d...'
+        ...
 
 .. documentation-end
 
