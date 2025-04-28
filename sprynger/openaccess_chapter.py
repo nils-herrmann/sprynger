@@ -113,7 +113,8 @@ class Chapter:
     @property
     def full_text(self) -> Optional[str]:
         """Raw full text of the chapter in JATS format."""
-        return etree.tostring(self._chapter_body, encoding="unicode")
+        if self._chapter_body is not None:
+            return etree.tostring(self._chapter_body, encoding="unicode")
 
     @property
     def isbn_electronic(self) -> Optional[str]:

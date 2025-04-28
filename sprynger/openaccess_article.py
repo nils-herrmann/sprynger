@@ -98,7 +98,8 @@ class Article:
     @property
     def full_text(self) -> Optional[str]:
         """Raw full text of the article in JATS format."""
-        return etree.tostring(self._article_body, encoding="unicode")
+        if self._article_body is not None:
+            return etree.tostring(self._article_body, encoding="unicode")
 
     @property
     def issn_electronic(self) -> Optional[str]:
