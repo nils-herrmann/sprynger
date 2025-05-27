@@ -98,13 +98,20 @@ Download and install the package from PyPI:
 
 For a comprehensive guide, see the documentation in `read the docs <https://sprynger.readthedocs.io/en/stable/>`_.
 
-⭐️ Give the package a star
----------------------------
 
-If the package helped you, give it a star!
+📝 Citation
+-----------
+
+If ``sprynger`` helped you retrieve your data, please cite the `corresponding paper <https://www.sciencedirect.com/science/article/pii/S2352711025001530>`_.
+
+::
+
+  Herrmann, N. A., & Rose, M. E. (2025). sprynger: Scriptable bibliometrics using a Python interface to Springer Nature. 
+  SoftwareX, 31, 102186. https://doi.org/10.1016/j.softx.2025.102186
+
 
 ⚠️ Disclaimer
 --------------
 
 This project is an independent API wrapper for the Springer Nature API.
-It is not affiliated with, endorsed, or maintained by Springer Nature. For official support, please refer to the Springers's `documentation <http://docs-dev.springernature.com/docs/>`_. and support channels.
+It is not affiliated with, endorsed, or maintained by Springer Nature. For official support, please refer to the Springers's `documentation <http://docs-dev.springernature.com/docs/>`_ and support channels.
