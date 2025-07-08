@@ -91,24 +91,31 @@ Download and install the package from PyPI:
         'Introduction With the advent of the Internet of Things and social networks, the reformation of the d...'
         ...
 
+📝 Citation
+-----------
+
+If ``sprynger`` helped you retrieve your data, please cite the `corresponding paper <https://www.sciencedirect.com/science/article/pii/S2352711025001530>`_.
+
+.. code-block:: bibtex
+
+  @article{HERRMANN2025102186,
+    title = {sprynger: Scriptable bibliometrics using a Python interface to Springer Nature},
+    journal = {SoftwareX},
+    volume = {31},
+    pages = {102186},
+    year = {2025},
+    issn = {2352-7110},
+    doi = {https://doi.org/10.1016/j.softx.2025.102186},
+    url = {https://www.sciencedirect.com/science/article/pii/S2352711025001530},
+    author = {Nils A. Herrmann and Michael E. Rose}
+  }
+
 .. documentation-end
 
 📖 Documentation
 -----------------
 
 For a comprehensive guide, see the documentation in `read the docs <https://sprynger.readthedocs.io/en/stable/>`_.
-
-
-📝 Citation
------------
-
-If ``sprynger`` helped you retrieve your data, please cite the `corresponding paper <https://www.sciencedirect.com/science/article/pii/S2352711025001530>`_.
-
-::
-
-  Herrmann, N. A., & Rose, M. E. (2025). sprynger: Scriptable bibliometrics using a Python interface to Springer Nature. 
-  SoftwareX, 31, 102186. https://doi.org/10.1016/j.softx.2025.102186
-
 
 ⚠️ Disclaimer
 --------------
