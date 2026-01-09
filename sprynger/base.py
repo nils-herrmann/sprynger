@@ -45,7 +45,7 @@ class Base:
         rate_limit = LIMIT['Premium'][api] if premium else LIMIT['Basic'][api]
         limit = min(nr_results, rate_limit)
 
-        key = get_key()
+        key = get_key(api)
         self._url = f'{BASE_URL}/{online_api}/{FORMAT[api]}'
         self._params = {'q': query,
                         's': start,
