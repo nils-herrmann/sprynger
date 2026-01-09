@@ -122,10 +122,26 @@ def get_key(api: str = 'Meta') -> str:
         
     Returns:
         str: The API key for the specified API.
+        
+    Raises:
+        MissingAPIKeyError: If the library is not initialized or if no key exists for the specified API.
+        ValueError: If an invalid API type is provided.
     """
     if not API_KEYS:
         raise MissingAPIKeyError('Library not initialized. '
                                 'Please initialize sprynger with init().\n'
                                 'For more information visit: '
                                 'the documentation.')
-    return API_KEYS.get(api)
+    
+    # Validate API type
+    if api not in API_KEYS:
+        raise ValueError(f'Invalid API type: {api}. '
+                        f'Valid types are: {", ".join(API_KEYS.keys())}')
+    
+    key = API_KEYS.get(api)
+    if not key:
+        raise MissingAPIKeyError(f'No API key found for {api} API. '
+                                f'Please initialize with appropriate key. '
+                                f'Use api_key_meta for Meta/Metadata APIs, '
+                                f'or api_key_oa for OpenAccess API.')
+    return key
