@@ -32,14 +32,20 @@ def init(api_key: Optional[str] = None,
         
     
     Raises:
-        ValueError: If no api key was provided either as argument or as an
-        environment variable `API_KEY`.
+        ValueError: If no api key was provided either as argument or as environment 
+        variables (API_KEY, API_KEY_META, or API_KEY_OA).
     
     Example:
         >>> from sprynger import init
         >>> init(api_key='your key')
         >>> init(api_key_meta='meta_key', api_key_oa='oa_key')
         >>> init(api_key='your key', api_key_meta='meta_key', api_key_oa='oa_key')
+    
+    Note:
+        Environment variables can be used:
+        - API_KEY: Used as default for both Meta and OpenAccess APIs
+        - API_KEY_META: Specific key for Meta API (overrides API_KEY)
+        - API_KEY_OA: Specific key for OpenAccess API (overrides API_KEY)
     """
     global API_KEYS
     global CONFIG
@@ -53,15 +59,17 @@ def init(api_key: Optional[str] = None,
 
     _create_cache_folders(CONFIG)
 
-    # Get api_key from environment if not provided
+    # Get api keys from environment if not provided
     env_api_key = os.environ.get("API_KEY")
+    env_api_key_meta = os.environ.get("API_KEY_META")
+    env_api_key_oa = os.environ.get("API_KEY_OA")
     
     # If api_key is provided or available in env, use it as default for both
     default_key = api_key or env_api_key
     
-    # Set API keys with fallback to default_key
-    meta_key = api_key_meta or default_key
-    oa_key = api_key_oa or default_key
+    # Set API keys with fallback to default_key and specific env vars
+    meta_key = api_key_meta or env_api_key_meta or default_key
+    oa_key = api_key_oa or env_api_key_oa or default_key
     
     # Store keys in a dictionary
     API_KEYS = {
@@ -73,8 +81,8 @@ def init(api_key: Optional[str] = None,
     # Check that at least one key is provided
     if not any(API_KEYS.values()):
         raise ValueError('No API key found. Provide an API key or set the '
-                         'environment variable API_KEY. To get an API key '
-                         'visit: https://dev.springernature.com/')
+                         'environment variables API_KEY, API_KEY_META, or API_KEY_OA. '
+                         'To get an API key visit: https://dev.springernature.com/')
 
 
 def _load_default_config() -> dict:

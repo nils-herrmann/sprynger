@@ -13,8 +13,9 @@ You initalize `sprynger` as follows:
     >>> # Or use separate keys for Meta and OpenAccess APIs
     >>> sprynger.init(api_key_meta='your_meta_key', api_key_oa='your_openaccess_key')
 
-This reads your api key(s) and uses the default configuration. You can also define `API_KEY` as an environment
-variable. To use a custom configuration specify `config_file` in `init()`.
+This reads your api key(s) and uses the default configuration. You can also define environment 
+variables: ``API_KEY`` (for both APIs), ``API_KEY_META`` (for Meta API), or ``API_KEY_OA`` 
+(for OpenAccess API). To use a custom configuration specify `config_file` in `init()`.
 
 .. function:: init(api_key: Optional[str] = None, api_key_meta: Optional[str] = None, api_key_oa: Optional[str] = None, config_file: Optional[Union[str, Path]] = None) -> None
 
@@ -30,8 +31,8 @@ variable. To use a custom configuration specify `config_file` in `init()`.
     :param config_file: Path to the configuration .toml file.
     :type config_file: str or Path, optional
 
-    :raises ValueError: If no API key was provided either as an argument or as an
-        environment variable `API_KEY`.
+    :raises ValueError: If no API key was provided either as an argument or as 
+        environment variables (``API_KEY``, ``API_KEY_META``, or ``API_KEY_OA``).
 
     Example:
 
@@ -56,6 +57,12 @@ In case you don't have a configuration file just enter your API key when prompte
     
     - If you have a single key that works for both APIs, use ``api_key='your_key'``
     - If you have separate keys, use ``api_key_meta='meta_key'`` and ``api_key_oa='oa_key'``
+    
+    **Environment Variables**: You can also set API keys via environment variables:
+    
+    - ``API_KEY`` - Used as default for both Meta and OpenAccess APIs
+    - ``API_KEY_META`` - Specific key for Meta API (overrides ``API_KEY``)
+    - ``API_KEY_OA`` - Specific key for OpenAccess API (overrides ``API_KEY``)
 
 
 Configuration
