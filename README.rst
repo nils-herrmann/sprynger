@@ -36,7 +36,7 @@ Simple API wrapper for the `Springer Nature APIs <https://dev.springernature.com
 
 Springer Nature currently offers three APIs:
 
-- **Springer Metadata API:** Metadata of articles, journal articles and book chapters.
+- **Springer Metadata API:** Metadata of articles, journal articles and book chapters. (**Note:** Being discontinued by Springer Nature)
 - **Springer Meta API:** Advanced version offering versioned metadata.
 - **Springer OpenAccess API:** Metadata and, where available, full-text.
 
@@ -56,10 +56,14 @@ Download and install the package from PyPI:
 .. code:: python
     
     >>> from sprynger import Meta, OpenAccess, init
+    >>> # Initialize with a single API key (for backward compatibility)
     >>> init(api_key='your free api key from https://dev.springernature.com')
+    >>> 
+    >>> # Or initialize with separate keys for Meta and OpenAccess APIs
+    >>> init(api_key_meta='your_meta_key', api_key_oa='your_openaccess_key')
     >>>
     >>> # Get metadata of all chapters in the book with ISBN '978-3-031-63497-0'
-    >>> book_metadata = Metadata(isbn='978-3-031-63497-0', nr_results=3)
+    >>> book_metadata = Meta(isbn='978-3-031-63497-0', nr_results=3)
     >>> for chapter in book_metadata:
     >>>     print(chapter.identifier)
     >>>     print(chapter.abstract)

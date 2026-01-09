@@ -12,18 +12,22 @@ from typing import Optional, Union
 from sprynger.exceptions import MissingAPIKeyError
 from sprynger.utils.constants import DEFAULT_PATHS, REQUESTS
 
-API_KEY = None
+API_KEYS = None
 CONFIG = None
 
 
 def init(api_key: Optional[str] = None,
+         api_key_meta: Optional[str] = None,
+         api_key_oa: Optional[str] = None,
          config_file: Optional[Union[str, Path]] = None) -> None:
     """
     Function to initialize the sprynger library. For more information go to the
     `documentation <file:///Users/nilsherrmann/sprynger/docs/build/html/initialization.html#configuration>`_.
     
     Args:
-        api_key (str): API key
+        api_key (str): API key (for backward compatibility, will be used for both Meta and OpenAccess)
+        api_key_meta (str): API key for Meta API
+        api_key_oa (str): API key for OpenAccess API
         config_file (str): Path to the configuration .toml file.
         
     
@@ -33,9 +37,11 @@ def init(api_key: Optional[str] = None,
     
     Example:
         >>> from sprynger import init
-        >>> init(key='your key', config_file='path/to/custom/config.toml')
+        >>> init(api_key='your key')
+        >>> init(api_key_meta='meta_key', api_key_oa='oa_key')
+        >>> init(api_key='your key', api_key_meta='meta_key', api_key_oa='oa_key')
     """
-    global API_KEY
+    global API_KEYS
     global CONFIG
 
     CONFIG = _load_default_config()
@@ -47,8 +53,25 @@ def init(api_key: Optional[str] = None,
 
     _create_cache_folders(CONFIG)
 
-    API_KEY = api_key or os.environ.get("API_KEY")
-    if not API_KEY:
+    # Get api_key from environment if not provided
+    env_api_key = os.environ.get("API_KEY")
+    
+    # If api_key is provided or available in env, use it as default for both
+    default_key = api_key or env_api_key
+    
+    # Set API keys with fallback to default_key
+    meta_key = api_key_meta or default_key
+    oa_key = api_key_oa or default_key
+    
+    # Store keys in a dictionary
+    API_KEYS = {
+        'Meta': meta_key,
+        'Metadata': meta_key,  # Metadata uses the same key as Meta
+        'OpenAccess': oa_key
+    }
+    
+    # Check that at least one key is provided
+    if not any(API_KEYS.values()):
         raise ValueError('No API key found. Provide an API key or set the '
                          'environment variable API_KEY. To get an API key '
                          'visit: https://dev.springernature.com/')
@@ -91,6 +114,18 @@ def get_config() -> dict:
     return CONFIG
 
 
-def get_key() -> str:
-    """Function to get the API keys and overwrite keys in config if needed."""
-    return API_KEY
+def get_key(api: str = 'Meta') -> str:
+    """Function to get the API key for the specified API.
+    
+    Args:
+        api (str): The API type ('Meta', 'Metadata', or 'OpenAccess'). Defaults to 'Meta'.
+        
+    Returns:
+        str: The API key for the specified API.
+    """
+    if not API_KEYS:
+        raise MissingAPIKeyError('Library not initialized. '
+                                'Please initialize sprynger with init().\n'
+                                'For more information visit: '
+                                'the documentation.')
+    return API_KEYS.get(api)
