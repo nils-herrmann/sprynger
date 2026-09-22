@@ -12,8 +12,8 @@ import warnings
 from lxml import etree
 from requests import Response
 
-from sprynger.utils.constants import BASE_URL, FORMAT, LIMIT, ONLINE_API
-from sprynger.utils.fetch import fetch_data
+from sprynger.utils.constants import BASE_URL, EMPTY_RESULT, FORMAT, LIMIT, ONLINE_API
+from sprynger.utils.fetch import fetch_data, is_empty_result
 from sprynger.utils.parse import chained_get
 from sprynger.utils.startup import get_config, get_key
 
@@ -151,9 +151,14 @@ class Base:
             else:
                 raise ValueError(f'Unknown format: {FORMAT[self._api]}')
 
-    def _fetch(self) -> Response:
+    def _fetch(self) -> Union[Response, MockResponse]:
         """Fetch data from the API and cache the response."""
         res = fetch_data(url=self._url, params=self._params)
+        if is_empty_result(res):
+            # Queries without hits are answered with a 404: return a response
+            # without records instead, which is not worth caching
+            return MockResponse(EMPTY_RESULT[FORMAT[self._api]],
+                                is_xml=FORMAT[self._api] == 'jats')
         if self._cache:
             # Save the response to the cache file depending on format
             with open(self._cache_file, 'w') as f:

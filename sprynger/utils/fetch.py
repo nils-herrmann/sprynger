@@ -3,6 +3,7 @@ from requests.adapters import HTTPAdapter
 from requests import Response, Session
 from urllib3.util.retry import Retry
 
+from sprynger.utils.constants import NO_RESULTS_MESSAGE
 from sprynger.utils.startup import get_config
 from sprynger.utils.parse import chained_get
 
@@ -32,6 +33,15 @@ def create_session(max_retries: int,
     return session
 
 
+def is_empty_result(response: Response) -> bool:
+    """Check whether the query returned no results.
+
+    The API answers queries without hits with a 404 and a dedicated message
+    instead of a 200 with `total: 0`.
+    """
+    return response.status_code == 404 and NO_RESULTS_MESSAGE in response.text
+
+
 def check_response(response: Response) -> None:
     """Check the response."""
     status_code = response.status_code
@@ -46,6 +56,9 @@ def check_response(response: Response) -> None:
     }
 
     if status_code != 200:
+        # A query without hits is not an error: it is handled as an empty result
+        if is_empty_result(response):
+            return
         error_class = error_map.get(status_code, APIError)
         if error_class is APIError:
             raise error_class(status_code, "Unhandled error occurred")

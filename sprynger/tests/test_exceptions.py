@@ -1,7 +1,10 @@
 """Module to test exceptions and warnings."""
 import pytest
 
-from sprynger import Metadata, init
+from requests import Response
+
+from sprynger import Meta, Metadata, OpenAccess, init
+from sprynger.utils.fetch import check_response, is_empty_result
 from sprynger.exceptions import (
     APIError,
     MissingAPIKeyError,
@@ -17,6 +20,46 @@ def test_empty_response():
     init()
     with pytest.warns(UserWarning, match='No results where found. Check the query.'):
         Metadata(doi='does_not_exist', refresh=True)
+
+
+def test_empty_response_meta():
+    """Test the empty response of the Meta API."""
+    init()
+    with pytest.warns(UserWarning, match='No results where found. Check the query.'):
+        meta = Meta(doi='does_not_exist', refresh=True)
+    assert meta.results.total == 0
+    assert meta.records == []
+
+
+def test_empty_response_openaccess():
+    """Test the empty response of the OpenAccess API."""
+    init()
+    with pytest.warns(UserWarning, match='No results where found. Check the query.'):
+        openaccess = OpenAccess(doi='does_not_exist', refresh=True)
+    assert openaccess.documents_found == 0
+    assert len(openaccess) == 0
+
+
+def _make_response(status_code: int, content: str) -> Response:
+    """Auxiliary function to build a response."""
+    response = Response()
+    response.status_code = status_code
+    response._content = content.encode()
+    return response
+
+
+def test_is_empty_result():
+    """Test that only the 'no data' 404 counts as an empty result."""
+    no_data = _make_response(404, '{"message": "No data was found for the given query."}')
+    not_found = _make_response(404, '{"message": "The requested URL was not found on this server"}')
+
+    assert is_empty_result(no_data)
+    assert not is_empty_result(not_found)
+    assert not is_empty_result(_make_response(200, '{}'))
+
+    check_response(no_data)  # Does not raise
+    with pytest.raises(ResourceNotFoundError):
+        check_response(not_found)
 
 
 def test_authentication_error():

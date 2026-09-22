@@ -23,6 +23,22 @@ FORMAT = {
     'OpenAccess': 'jats'
 }
 
+# Message returned by the API (with status 404) when a query has no hits
+NO_RESULTS_MESSAGE = 'No data was found for the given query.'
+
+# Responses without records, used when a query has no hits
+EMPTY_RESULT = {
+    'json': {'apiMessage': NO_RESULTS_MESSAGE,
+             'result': [{'total': '0', 'start': '0',
+                         'pageLength': '0', 'recordsDisplayed': '0'}],
+             'records': [],
+             'facets': []},
+    'jats': f'<response><apiMessage>{NO_RESULTS_MESSAGE}</apiMessage>'
+            '<result><total>0</total><start>0</start>'
+            '<pageLength>0</pageLength><recordsDisplayed>0</recordsDisplayed></result>'
+            '<records/><facets/></response>'
+}
+
 LIMIT = {
     'Basic': {
         'Metadata': 25,
