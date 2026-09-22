@@ -22,3 +22,19 @@ def test_check_query():
     error_str = f"Field topicalcollection is not available in Basic plan."
     with pytest.raises(ValueError, match=error_str):
         Retrieve('', api='Meta', premium=False, topicalcollection='Neural Network')
+
+
+def test_premium_only_fields():
+    """Test the premium-only fields of the Springer Nature Taxonomy."""
+    fields = ['discipline', 'subjectcollection', 'sntsubject', 'articletype', 'license']
+
+    # Validation passes on a premium plan (no request is made)
+    retriever = Retrieve.__new__(Retrieve)
+    for field in fields:
+        for api in ['Metadata', 'OpenAccess', 'Meta']:
+            retriever._validate_field(field, api, 'Premium')
+
+    for field in fields:
+        error_str = f"Field {field} is not available in Basic plan."
+        with pytest.raises(ValueError, match=error_str):
+            Retrieve('', api='Meta', premium=False, **{field: 'Chemistry'})

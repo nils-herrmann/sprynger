@@ -71,6 +71,10 @@ VALID_FIELDS = {
         "api": ["Metadata", "OpenAccess", "Meta"],
         "plan": ["Premium"]
     },
+    "discipline": {
+        "api": ["Metadata", "OpenAccess", "Meta"],
+        "plan": ["Premium"]
+    },
     "keyword": {
         "api": ["Metadata", "OpenAccess", "Meta"],
         "plan": ["Basic", "Premium"]
@@ -79,11 +83,27 @@ VALID_FIELDS = {
         "api": ["Metadata", "OpenAccess", "Meta"],
         "plan": ["Premium"]
     },
+    "subjectcollection": {
+        "api": ["Metadata", "OpenAccess", "Meta"],
+        "plan": ["Premium"]
+    },
+    "sntsubject": {
+        "api": ["Metadata", "OpenAccess", "Meta"],
+        "plan": ["Premium"]
+    },
+    "articletype": {
+        "api": ["Metadata", "OpenAccess", "Meta"],
+        "plan": ["Premium"]
+    },
     "pub": {
         "api": ["Metadata", "OpenAccess", "Meta"],
         "plan": ["Premium"]
     },
     "year": {
+        "api": ["Metadata", "OpenAccess", "Meta"],
+        "plan": ["Premium"]
+    },
+    "license": {
         "api": ["Metadata", "OpenAccess", "Meta"],
         "plan": ["Premium"]
     },
