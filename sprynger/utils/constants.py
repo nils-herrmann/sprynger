@@ -48,8 +48,8 @@ LIMIT = {
         'OpenAccessBook': 20,
     },
     'Premium': {
-        'Metadata': 25,
-        'Meta': 25,
+        'Metadata': 100,
+        'Meta': 100,
         'OpenAccess': 20,
         'OpenAccessJournal': 20,
         'OpenAccessBook': 20,
