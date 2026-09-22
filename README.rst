@@ -34,7 +34,7 @@ Simple API wrapper for the `Springer Nature APIs <https://dev.springernature.com
 🏔️ Overview Springer Nature
 ----------------------------
 
-Springer Nature currently offers three APIs:
+Springer Nature currently offers three free APIs:
 
 - **Springer Metadata API:** Metadata of articles, journal articles and book chapters. (**Note:** Being discontinued by Springer Nature)
 - **Springer Meta API:** Advanced version offering versioned metadata.
