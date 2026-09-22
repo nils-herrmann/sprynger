@@ -146,13 +146,14 @@ class Metadata(Retrieve):
             The properties `facets`, `records` and `results` can be converted to a pandas 
             DataFrame with `pd.DataFrame(object.property)`.
         """
-        warnings.warn(
-            'The Metadata API is being discontinued by Springer Nature. '
-            'Please use the Meta API (sprynger.Meta) instead for versioned metadata.',
-            DeprecationWarning,
-            stacklevel=2
-        )
         api = self.__class__.__name__
+        if api == 'Metadata':
+            warnings.warn(
+                'The Metadata API is being discontinued by Springer Nature. '
+                'Please use the Meta API (sprynger.Meta) instead for versioned metadata.',
+                DeprecationWarning,
+                stacklevel=2
+            )
         super().__init__(query=query,
                          api=api,
                          start=start,
